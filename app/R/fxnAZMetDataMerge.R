@@ -3,6 +3,7 @@
 #' @param azmetStation - AZMet station selection by user
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selection by user
 #' @return `dataAZMetDataMerge` - merged data tables from individual years
 
 
@@ -20,10 +21,19 @@ fxnAZMetDataMerge <- function(azmetStation, startDate, endDate) {
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))
       endDate <- min(seq(endDate, length = 2, by = "-1 year"))
     } else {
+      # Chill accumulation calculation
+      dataAZMetDataSumChill <- fxnAZMetDataSumChill(
+        inData = dataAZMetDataELT,
+        azmetStation = azmetStation, 
+        startDate = startDate, 
+        endDate = endDate,
+        chillVariable = chillVariable
+      )
+      
       if (exists("dataAZMetDataMerge") == FALSE) {
-        dataAZMetDataMerge <- dataAZMetDataELT
+        dataAZMetDataMerge <- dataAZMetDataSumChill
       } else {
-        dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataELT)
+        dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataSumChill)
       }
       
       startDate <- min(seq(startDate, length = 2, by = "-1 year"))
@@ -32,4 +42,12 @@ fxnAZMetDataMerge <- function(azmetStation, startDate, endDate) {
   }
   
   return(dataAZMetDataMerge)
+}
+
+
+
+# For case of missing data from Yuma North Gila
+if (azmetStation == "Yuma North Gila" && endDate >= lubridate::as_date(paste0(lubridate::year(endDate), "-06-16"))) {
+  dataAZMetDataMerge <- dataAZMetDataMerge %>%
+    dplyr::filter(date_year != 2021)
 }

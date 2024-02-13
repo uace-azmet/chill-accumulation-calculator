@@ -133,7 +133,7 @@ server <- function(input, output, session) {
   # Reactive events -----
   
   # AZMet chill accumulation data
-  dataAZMetDataSumChill <- eventReactive(input$calculateChillAccumulation, {
+  dataAZMetDataMerge <- eventReactive(input$calculateChillAccumulation, {
     validate(
       need(expr = input$startDate <= input$endDate, message = FALSE)
     )
@@ -149,18 +149,19 @@ server <- function(input, output, session) {
     
     on.exit(removeNotification(id = idCalculatingChillAccumulation), add = TRUE)
     
-    # Calls 'fxnAZMetDataMerge()', which calls 'fxnAZMetDataELT()'
-    fxnAZMetDataSumChill(
+    # Calls 'fxnAZMetDataELT()' and 'fxnAZMetDataSumChill()'
+    fxnAZMetDataMerge(
       azmetStation = input$azmetStation, 
       startDate = input$startDate, 
       endDate = input$endDate,
-      chillVariable = input$chillVariable)
+      chillVariable = input$chillVariable
+    )
   })
   
   # Build figure
-  figure <- eventReactive(dataAZMetDataSumChill(), {
+  figure <- eventReactive(dataAZMetDataMerge(), {
     fxnFigure(
-      inData = dataAZMetDataSumChill(), 
+      inData = dataAZMetDataMerge(), 
       azmetStation = input$azmetStation,
       startDate = input$startDate, 
       endDate = input$endDate,
@@ -169,7 +170,7 @@ server <- function(input, output, session) {
   })
   
   # Build figure footer
-  figureFooter <- eventReactive(dataAZMetDataSumChill(), {
+  figureFooter <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureFooter(
       azmetStation = input$azmetStation,
       startDate = input$startDate, 
@@ -179,12 +180,12 @@ server <- function(input, output, session) {
   })
   
   # Build table footer help text
-  figureFooterHelpText <- eventReactive(dataAZMetDataSumChill(), {
+  figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureFooterHelpText()
   })
   
   # Build figure subtitle
-  figureSubtitle <- eventReactive(dataAZMetDataSumChill(), {
+  figureSubtitle <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureSubtitle(azmetStation = input$azmetStation, startDate = input$startDate, endDate = input$endDate)
   })
   
@@ -198,7 +199,7 @@ server <- function(input, output, session) {
       errorClass = "datepicker"
     )
     
-    figureTitle <- fxnFigureTitle(inData = dataAZMetDataSumChill(), endDate = input$endDate)
+    figureTitle <- fxnFigureTitle(inData = dataAZMetDataMerge(), endDate = input$endDate)
   })
   
   # Outputs -----
