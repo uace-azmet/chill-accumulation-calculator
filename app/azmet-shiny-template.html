@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# " class="sticky-footer">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="Generator" content="Drupal 9 (https://www.drupal.org)" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="shortcut icon" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/themes/custom/az_barrio/favicon.ico" type="image/vnd.microsoft.icon" />
+    <!-- link rel="canonical" href="https://staging.azmet.arizona.edu/past-data" /-->
+    <!-- link rel="shortlink" href="https://staging.azmet.arizona.edu/node/6" /-->
+    <!-- link rel="revision" href="https://staging.azmet.arizona.edu/past-data" /-->
+    <!-- Google tag (gtag.js) -->
+    <!-- Paste new tag/property code for this AZMet Shiny app here -->
+    <script src="https://staging.azmet.arizona.edu/sites/default/files/google_tag/az_comprehensive/google_tag.script.js?s0j7xh" defer></script>
+    <title>Chill Accumulation Calculator | Arizona Meteorological Network</title> <!-- Edit this line based on individual Shiny app -->
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/modules/custom/az_flexible_page/css/az_flexible_page.theme.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/ajax-progress.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/align.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/autocomplete-loading.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/fieldgroup.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/container-inline.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/clearfix.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/details.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/hidden.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/item-list.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/js.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/nowrap.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/position-container.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/progress.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/reset-appearance.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/resize.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/sticky-header.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/system-status-counter.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/system-status-report-counters.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/system-status-report-general-info.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/tabledrag.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/tablesort.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/system/css/components/tree-child.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/core/modules/views/css/views.module.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/modules/custom/azmet_views/css/azmet_views.css?s0j7xh" />
+    <!-- Reference local fonts files instead -->
+    <!-- link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/modules/custom/azmet_views/fonts/icomoon/style.css?s0j7xh" / -->
+    <link rel="stylesheet" media="all" href="style.css?s0j7xh" / >
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/modules/contrib/extlink/extlink.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/modules/contrib/paragraphs/css/paragraphs.unpublished.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/modules/custom/az_paragraphs/css/az_paragraphs_full_width.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/modules/custom/az_paragraphs/css/az_paragraphs_az_text_background.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/user.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/progress.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/themes/custom/az_barrio/css/az-media-display.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/affix.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/alerts.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/book.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/comments.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/contextual.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/feed-icon.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/field.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/header.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/help.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/icons.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/image-button.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/item-list.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/list-group.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/node-preview.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/page.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/search-form.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/shortcut.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/skip-link.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/tabledrag.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/tableselect.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/tablesort-indicator.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/ui.widget.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/tabs.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/vertical-tabs.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/views.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/components/ui-dialog.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/themes/custom/az_barrio/css/style.css?s0j7xh" />
+    <link rel="stylesheet" media="print" href="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/css/print.css?s0j7xh" />
+    <link rel="stylesheet" media="all" href="https://use.typekit.net/emv3zbo.css" />
+    <link rel="stylesheet" media="all" href="https://fonts.googleapis.com/css?family=Material+Icons+Sharp" />
+    <link rel="stylesheet" media="all" href="https://cdn.digital.arizona.edu/lib/az-icons/main/az-icons-styles.css" />
+    <link rel="stylesheet" media="all" href="https://cdn.digital.arizona.edu/lib/arizona-bootstrap/2.0.13/css/arizona-bootstrap.min.css" />
+    <link rel="stylesheet" media="all" href="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/themes/custom/az_barrio/css/az-barrio-off-canvas-nav.css?s0j7xh" />
+    <!-- CSS specific to this AZMet Shiny app -->
+    <link rel="stylesheet" media="all" href="chill-accumulation-calculator.css" />
+    <!-- Shiny head code, https://shiny.posit.co/r/articles/build/templates/ -->
+    {{ headContent() }}
+  </head>
+  <body class="exclude-node-title layout-no-sidebars path-node node--type-az-flexible-page">
+    <a href="#content" class="visually-hidden focusable skip-link">Skip to main content</a>
+    <noscript aria-hidden="true"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-ML2BZB" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+      <div id="page-wrapper">
+        <div id="page">
+          <header id="header" class="header" role="banner" aria-label="Site header">
+            <header class="bg-red arizona-header" id="header_arizona" role="banner">
+              <div class="container">
+                <div class="row">
+                  <a class="arizona-logo" href="https://www.arizona.edu" title="The University of Arizona homepage">
+                    <img class="arizona-line-logo" alt="The University of Arizona Wordmark Line Logo White" src="https://cdn.digital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"/>
+                  </a>
+                  <section class="ml-auto d-none d-lg-block d-xl-block region region-header-ua-utilities">
+                    <div class="search-block-form block block-search block-search-form-block" data-drupal-selector="search-block-form" id="block-az-barrio-search" role="search">
+                      <div class="content">
+                        <!-- form action="/search/node" method="get" id="search-block-form" accept-charset="UTF-8" class="search-form search-block-form" -->
+                          <!-- div class="input-group" -->
+                            <!-- label for="edit-keys" class="sr-only">Search</label -->
+                            <!-- input title="Enter the terms you wish to search for." data-drupal-selector="edit-keys" type="search" id="edit-keys" name="keys" value="" size="15" maxlength="128" class="form-search form-control" placeholder="Search this site" aria-label="Search this site" / -->
+                            <!-- div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper input-group-append" id="edit-actions" -->
+                              <!-- button data-drupal-selector="edit-submit" type="submit" id="edit-submit" value="Search" class="button js-form-submit form-submit btn" -->
+                                <!-- span class="material-icons-sharp">search</span -->
+                              <!-- /button -->
+                            <!-- /div -->
+                          <!-- /div -->
+                        <!-- /form -->
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <!-- div class="redbar-buttons d-lg-none" -->
+                <!-- button data-toggle="offcanvas" type="button" data-target="#navbarOffcanvasDemo" aria-controls="navbarOffcanvasDemo" class="btn btn-redbar" id="jsAzSearch" -->
+                  <!-- span class="icon material-icons-sharp"> search </span -->
+                  <!-- span class="icon-text"> search </span -->
+                <!-- /button -->
+                <!-- button data-toggle="offcanvas" type="button" data-target="#navbarOffcanvasDemo" aria-controls="navbarOffcanvasDemo" class="btn btn-redbar" -->
+                  <!-- span class="icon material-icons-sharp"> menu </span -->
+                  <!-- span class="icon-text"> menu </span -->
+                <!-- /button -->
+              <!-- /div -->
+            </header>
+            <div class="header page-row" id="header_site" role="banner">
+              <div class="container">
+                <div class="row">
+                  <div class="col-12 col-sm-6 col-lg-4">
+                    <section class="region region-branding">
+                      <div id="block-az-barrio-branding" class="clearfix block block-system block-system-branding-block">
+                        <a href="https://azmet.arizona.edu" title="The Arizona Meteorological Network | Home" class="qs-site-logo d-block" target="blank" rel="home"><img class="img-fluid" src="azmet-logo.png" alt="The Arizona Meteorological Network | Home" typeof="foaf:Image" /></a>
+                      </div>
+                    </section>
+                  </div>
+                  <div class="col-12 col-sm-6 col-lg-8">
+                    <div class="row">
+                    </div>
+                  </div>
+                </div> <!-- /.row -->
+              </div> <!-- /.container -->
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg">
+                    <!-- nav class="navbar-offcanvas has-navigation-region has-off-canvas-region" id="navbarOffcanvasDemo" -->
+                      <!-- div class="navbar-offcanvas-header" -->
+                        <!-- div class="bg-chili d-flex justify-content-between align-items-center" -->
+                          <!-- a href="/" class="btn btn-redbar" -->
+                            <!-- span class="icon material-icons-sharp"> home </span -->
+                            <!-- span class="icon-text"> home </span -->
+                          <!-- /a -->
+                          <!-- button data-toggle="offcanvas" type="button" data-target="#navbarOffcanvasDemo" aria-controls="navbarOffcanvasDemo" class="btn btn-redbar" -->
+                            <!-- span class="icon material-icons-sharp"> close </span -->
+                            <!-- span class="icon-text"> close </span -->
+                          <!-- /button -->
+                        <!-- /div -->
+                        <!-- section class="region region-navigation-offcanvas" -->
+                          <!-- div class="search-block-form bg-white navbar-offcanvas-search" data-drupal-selector="search-block-form-2" id="block-az-barrio-offcanvas-searchform" role="search" -->
+                            <!-- form action="/search/node" method="get" id="search-block-form--2" accept-charset="UTF-8" class="search-form search-block-form" -->
+                              <!-- div class="input-group" -->
+                                <!-- label for="edit-keys--2" class="sr-only">Search</label -->
+                                <!-- input title="Enter the terms you wish to search for." data-drupal-selector="edit-keys" type="search" id="edit-keys--2" name="keys" value="" size="15" maxlength="128" class="form-search form-control" placeholder="Search this site" aria-label="Search this site" -->
+                                <!-- div data-drupal-selector="edit-actions" class="form-actions js-form-wrapper input-group-append" id="edit-actions--2" -->
+                                  <!-- button data-drupal-selector="edit-submit" type="submit" id="edit-submit--2" value="Search" class="button js-form-submit form-submit btn" -->
+                                    <!-- span class="material-icons-sharp">search</span -->
+                                  <!-- /button -->
+                                <!-- /div -->
+                              <!-- /div -->
+                            <!-- /form -->
+                          <!-- /div -->
+                        <!-- /section -->
+                      <!-- /div -->
+                      <!-- section class="region region-navigation" -->
+                        <!-- nav role="navigation" aria-labelledby="block-az-barrio-main-menu-menu" id="block-az-barrio-main-menu" class="block block-menu navigation menu--main" -->
+                          <!-- h2 class="sr-only" id="block-az-barrio-main-menu-menu">Main navigation</h2 -->
+                          <!-- ul block="block-az-barrio-main-menu" class="clearfix navbar-nav flex-lg-row" -->
+                            <!-- li class="nav-item menu-item--collapsed" -->
+                              <!-- a href="/current-conditions" class="nav-link" data-drupal-link-system-path="node/1">Current Conditions</a -->
+                            <!-- /li -->
+                            <!-- li class="nav-item menu-item--collapsed" -->
+                              <!-- a href="/past-data" class="nav-link" data-drupal-link-system-path="node/6">Past Data</a -->
+                            <!-- /li -->
+                            <!-- li class="nav-item menu-item--collapsed active" -->
+                              <!-- a href="/application-areas" class="nav-link active" data-drupal-link-system-path="node/7">Application Areas</a -->
+                            <!-- /li -->
+                            <!-- li class="nav-item menu-item--collapsed" -->
+                              <!-- a href="/about" class="nav-link" data-drupal-link-system-path="node/8">About</a -->
+                            <!-- /li -->
+                          <!-- /ul -->
+                        <!-- /nav -->
+                      <!-- /section -->
+                    <!-- /nav -->
+                  </div>
+                </div>
+                <!-- div class="row" -->
+                  <!-- section class="col-md region region-help" -->
+                    <!-- div data-drupal-messages-fallback class="hidden" -->
+                    <!-- /div -->
+                  <!-- /section -->
+                <!-- /div -->
+              </div>
+            </div>
+          </header>
+          <div id="main-wrapper" class="layout-main-wrapper clearfix">
+            <div id="main" role="main">
+              <div class="container fluid bg-white">
+                <div class="row">
+                  <section class="col-md region region-breadcrumb">
+                    <div id="block-az-barrio-breadcrumbs" class="block block-system block-system-breadcrumb-block">
+                      <div class="content">
+                        <div class="container">
+                          <nav role="navigation" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                              <!-- li class="breadcrumb-item" -->
+                                <!-- a href="/application-areas"><span>« Back to </span>Application Areas</a -->
+                              <!-- /li -->
+                              <!-- li class="breadcrumb-item" -->
+                                <!-- a href="/application-areas"><span>&laquo; Back to</span>Application Areas</a -->
+                              <!-- /li -->
+                            </ol>
+                          </nav>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+                <div class="row">
+                </div>
+              </div>
+              <div class="container">
+                <div class="row row-offcanvas row-offcanvas-left clearfix">
+                  <main class="main-content col" id="content" role="main">
+                    <section class="region region-content">
+                      <div id="block-az-barrio-page-title" class="block block-core block-page-title-block">
+                        <div class="content">
+                          <h1 class="hidden title"><span class="field field--name-title field--type-string field--label-hidden">Chill Accumulation Calculator</span></h1> <!-- Edit this line based on individual Shiny app -->
+                        </div>
+                      </div>
+                      <div id="block-az-barrio-content" class="block block-system block-system-main-block">
+                        <div class="content">
+                          <article role="article" about="" class="node node--type-az-flexible-page node--view-mode-full clearfix"> <!-- Edit this line based on individual Shiny app -->
+                            <div class="node__content clearfix">
+                              <div class="field field--name-field-az-main-content field--type-entity-reference-revisions field--label-hidden field__items">
+                                <div class="field__item">
+                                  <div class="mb-5 paragraph background-wrapper paragraph--type--az-text-background paragraph--view-mode--default bg-triangles-top-left bg-azurite py-5 full-width-background">
+                                    <div class="container">
+                                      <div class="az-full-width-row">
+                                        <div class="az-full-width-column-content">
+                                          <div class="content">
+                                            <div class="clearfix text-formatted field field--name-field-az-text-area field--type-text-long field--label-hidden field__item">
+                                              <div class="d-flex flex-nowrap">
+                                                <div class="icon-circle d-flex justify-content-center align-items-center mr-3">
+                                                  <span class="lm-dryleaf"></span> <!-- Edit this line based on individual Shiny app --> <!-- icon list at: https://staging.azmet.arizona.edu/modules/custom/azmet_views/fonts/icomoon/style.css -->
+                                                </div>
+                                                <div class="titles">
+                                                  <h2 class="mt-4 d-inline">Chill Accumulation Calculator</h2> <!-- Edit this line based on individual Shiny app -->
+                                                  <h5 class="mb-0 mt-2">Calculate Chill Accumulation by Station and Date Range</h5> <!-- Edit this line based on individual Shiny app -->
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </article>
+                        </div>
+                      </div>
+                    </section>
+                  </main>
+                </div>
+              </div>
+            </div>
+            <div class="container">
+              <!-- div -->
+                <!-- Shiny app -->
+                {{ sidebarLayout }}
+              <!-- /div -->
+            </div>
+            <div class="container">
+              <br><br>
+            </div>
+          </div>
+          <footer class="site-footer">
+            <div class="bg-warm-gray py-5" role="contentinfo">
+              <section>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-12 col-sm-5 col-md-4 col-lg-4 text-center-xs text-left-not-xs">
+                      <div class="row bottom-buffer-30">
+                        <div class="col">
+                          <a href="https://azmet.arizona.edu" title="Arizona Meteorological Network | Home" class="qs-site-logo d-block mt-0" target="_blank" rel="home">
+                            <img class="img-fluid" src="azmet-logo.png" alt="Arizona Meteorological Network | Home" typeof="foaf:Image">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Force next columns to break to new line at md breakpoint and up -->
+                    <div class="w-100 d-block d-sm-none">
+                    </div>
+                    <section class="col-12 col-sm-7 col-md-8 col-lg-8 region region-footer">
+                      <div id="block-footerinfo" class="block block-block-content block-block-content3f132fa8-4eef-48a3-8ff8-cf10a29efd9f">
+                        <div class="content">
+                          <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item">
+                            <div class="text-align-right">
+                              <h6 class="bold mt-0">Arizona Meteorological Network</h6>
+                              <p>1140 E South Campus Dr<br />PO Box 210036<br />Tucson, AZ 85721-0036</p>
+                              <p><!-- a href="https://staging.azmet.arizona.edu/contact" target="_blank">Contact Us</a><br--><a href="mailto:azmet@arizona.edu">Email</a></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    <div class="col-12">
+                      <hr>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <div id="footer_sub">
+                <div class="container">
+                  <div class="row">
+                  </div>
+                  <div class="row">
+                  </div>
+                  <div class="row">
+                    <div class="col text-center">
+                      <p class="font-weight-light"><em>We respectfully acknowledge the University of Arizona is on the land and territories of Indigenous peoples. Today, Arizona is home to 22 federally recognized tribes, with Tucson being home to the O’odham and the Yaqui. Committed to diversity and inclusion, the University strives to build sustainable relationships with sovereign Native Nations and Indigenous communities through education offerings, partnerships, and community service.</em></p>
+                      <hr>
+                      <p class="small"><a href="https://www.arizona.edu/information-security-privacy" target="_blank">University Information Security and Privacy</a></p>
+                      <p class="small">&copy; 2024 The Arizona Board of Regents on behalf of <a href="https://www.arizona.edu" target="_blank">The University of Arizona</a>.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+    <script src="https://staging.azmet.arizona.edu/core/assets/vendor/jquery/jquery.min.js?v=3.6.0"></script>
+    <script src="https://staging.azmet.arizona.edu/core/assets/vendor/jquery-once/jquery.once.min.js?v=2.2.3"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/drupalSettingsLoader.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/drupal.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/drupal.init.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/modules/custom/azmet_views/js/azmet_views.js?v=1.x"></script>
+    <script src="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/js/global.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/themes/contrib/bootstrap_barrio/js/affix.js?v=9.2.18"></script>
+    <script src="https://cdn.digital.arizona.edu/lib/arizona-bootstrap/2.0.13/js/arizona-bootstrap.bundle.min.js"></script>
+    <script src="https://staging.azmet.arizona.edu/modules/contrib/extlink/extlink.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/modules/custom/az_paragraphs/js/az_paragraphs_full_width.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/debounce.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/displace.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/core/misc/tableheader.js?v=9.2.18"></script>
+    <script src="https://staging.azmet.arizona.edu/profiles/custom/az_quickstart/themes/custom/az_barrio/js/az-barrio-off-canvas-nav.js?s0j7xh"></script>
+  </body>
+</html>
