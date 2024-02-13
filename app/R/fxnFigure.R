@@ -1,62 +1,58 @@
-#' fxnFigure: generates bar chart of cumulative heat units of current and recent years with cotton growth stage labels
+#' fxnFigure: generates bar chart of cumulative chill of current and recent years
 #' 
-#' @param inData - data table of seasonal heat accumulation values by year
+#' @param inData - data table of seasonal chill accumulation values by year
 #' @param azmetStation - AZMet station selection by user
-#' @param startDate - Planting date of period of interest
+#' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selection by user
 #' @return `figure` - png of figure
-#' 
 
 
-fxnFigure <- function(inData, azmetStation, startDate, endDate) {
+fxnFigure <- function(inData, azmetStation, startDate, endDate, chillVariable) {
+  hline <- data.frame(y = 0)
+  
   figure <- ggplot2::ggplot(
     data = inData, 
-    mapping = aes(x = as.factor(.data$date_year), y = .data$heat_units_55F_cumulative)
+    mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum)
   ) +
-    
-    # Cotton growth stages as cumulative heat units (https://www.color-hex.com/color/CCCCCC)
-    geom_rect(xmin = -Inf, xmax = Inf, ymin = 1800, ymax = 2200, alpha = 0.1, fill = "#CCCCCC") + # Peak Bloom
-    geom_rect(xmin = -Inf, xmax = Inf, ymin = 2400, ymax = 2800, alpha = 0.1, fill = "#CCCCCC") + # Cutout
-    geom_rect(xmin = -Inf, xmax = Inf, ymin = 3000, ymax = 3400, alpha = 0.1, fill = "#CCCCCC") + # Terminate
     
     geom_col( # Previous growing season
       data = dplyr::filter(inData, inData$date_year < max(inData$date_year)), 
-      mapping = aes(x = as.factor(.data$date_year), y = .data$heat_units_55F_cumulative), 
+      mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum), 
       alpha = 1.0, fill = "#999999"
     ) +
     
     geom_col( # Current growing season
       data = dplyr::filter(inData, inData$date_year == max(inData$date_year)), 
-      mapping = aes(x = as.factor(.data$date_year), y = .data$heat_units_55F_cumulative), 
+      mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum), 
       alpha = 1.0, fill = "#001C48"
     ) +
     
     geom_hline( # Cotton growth stages as cumulative heat units
-      data = dataCottonGrowthStages, 
-      mapping = aes(yintercept = huapValue), 
+      data = hline, 
+      mapping = aes(yintercept = y), 
       alpha = 1.0, color = "#CCCCCC", linetype = "solid", linewidth = 0.3
     ) +
     
     geom_label( # Previous growing season
       data = dplyr::filter(inData, inData$date_year < max(inData$date_year)), 
-      mapping = aes(label = .data$labelHUs, fontface = "bold"), 
+      mapping = aes(label = .data$chillSumLabel, fontface = "bold"), 
       color = "#999999", fill = NA, label.size = NA, size = 3, vjust = 0.0
     ) +
     
     geom_label( # Current growing season
       data = dplyr::filter(inData, inData$date_year == max(inData$date_year)), 
-      mapping = aes(label = .data$labelHUs, fontface = "bold"), 
+      mapping = aes(label = .data$chillSumLabel, fontface = "bold"), 
       color = "#001C48", fill = NA, label.size = NA, size = 3, vjust = 0.0
     ) + 
     
-    labs(x = "\nYear", y = "Cumulative Heat Units\n") +
+    labs(x = "\nYear", y = paste0(chillVariable,"\n")) +
     
-    scale_y_continuous(
-      breaks = dataCottonGrowthStages$huapValue, 
-      labels = dataCottonGrowthStages$huapValue,
-      expand = expansion(mult = c(0.01, 0.05)),
-      sec.axis = (dup_axis(labels = dataCottonGrowthStages$growthStage))
-    ) +
+    #scale_y_continuous(
+    #  breaks = dataCottonGrowthStages$huapValue, 
+    #  labels = dataCottonGrowthStages$huapValue,
+    #  expand = expansion(mult = c(0.01, 0.05))
+    #) +
     
     theme_minimal() +
     
@@ -75,12 +71,12 @@ fxnFigure <- function(inData, azmetStation, startDate, endDate) {
       #axis.title.x.bottom,
       #axis.title.y,
       #axis.title.y.left,
-      axis.title.y.right = element_blank(),
-      #axis.text,
-      axis.text.x = element_text(color = "#343a40", face = "plain", size = 10),
+      #axis.title.y.right,
+      axis.text = element_text(color = "#343a40", face = "plain", size = 10),
+      #axis.text.x,
       #axis.text.x.top,
       #axis.text.x.bottom,
-      axis.text.y = element_text(color = "#343a40", face = "plain", size = 10),
+      #axis.text.y,
       #axis.text.y.left,
       #axis.text.y.right,
       #axis.ticks,

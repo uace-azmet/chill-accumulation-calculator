@@ -132,71 +132,73 @@ server <- function(input, output, session) {
   
   # Reactive events -----
   
-  # AZMet heat-unit accumulation data
-  dataAZMetDataSumHUs <- eventReactive(input$calculateHeatAccumulation, {
+  # AZMet chill accumulation data
+  dataAZMetDataSumChill <- eventReactive(input$calculateChillAccumulation, {
     validate(
-      need(expr = input$plantingDate <= input$endDate, message = FALSE)
+      need(expr = input$startDate <= input$endDate, message = FALSE)
     )
     
-    idCalculatingHeatAccumulation <- showNotification(
-      ui = "Calculating heat accumulation . . .", 
+    idCalculatingChillAccumulation <- showNotification(
+      ui = "Calculating chill accumulation . . .", 
       action = NULL, 
       duration = NULL, 
       closeButton = FALSE,
-      id = "idCalculatingHeatAccumulation",
+      id = "idCalculatingChillAccumulation",
       type = "message"
     )
     
-    on.exit(removeNotification(id = idCalculatingHeatAccumulation), add = TRUE)
+    on.exit(removeNotification(id = idCalculatingChillAccumulation), add = TRUE)
     
     # Calls 'fxnAZMetDataMerge()', which calls 'fxnAZMetDataELT()'
-    fxnAZMetDataSumHUs(
+    fxnAZMetDataSumChill(
       azmetStation = input$azmetStation, 
-      startDate = input$plantingDate, 
-      endDate = input$endDate)
+      startDate = input$startDate, 
+      endDate = input$endDate,
+      chillVariable = input$chillVariable)
   })
   
   # Build figure
-  figure <- eventReactive(dataAZMetDataSumHUs(), {
+  figure <- eventReactive(dataAZMetDataSumChill(), {
     fxnFigure(
-      inData = dataAZMetDataSumHUs(), 
+      inData = dataAZMetDataSumChill(), 
       azmetStation = input$azmetStation,
-      startDate = input$plantingDate, 
-      endDate = input$endDate
+      startDate = input$startDate, 
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
     )
   })
   
   # Build figure footer
-  figureFooter <- eventReactive(dataAZMetDataSumHUs(), {
+  figureFooter <- eventReactive(dataAZMetDataSumChill(), {
     fxnFigureFooter(
       azmetStation = input$azmetStation,
-      startDate = input$plantingDate, 
+      startDate = input$startDate, 
       endDate = input$endDate, 
       timeStep = "Daily"
     )
   })
   
   # Build table footer help text
-  figureFooterHelpText <- eventReactive(dataAZMetDataSumHUs(), {
+  figureFooterHelpText <- eventReactive(dataAZMetDataSumChill(), {
     fxnFigureFooterHelpText()
   })
   
   # Build figure subtitle
-  figureSubtitle <- eventReactive(dataAZMetDataSumHUs(), {
-    fxnFigureSubtitle(azmetStation = input$azmetStation, startDate = input$plantingDate, endDate = input$endDate)
+  figureSubtitle <- eventReactive(dataAZMetDataSumChill(), {
+    fxnFigureSubtitle(azmetStation = input$azmetStation, startDate = input$startDate, endDate = input$endDate)
   })
   
   # Build figure title
-  figureTitle <- eventReactive(input$calculateHeatAccumulation, {
+  figureTitle <- eventReactive(input$calculateChillAccumulation, {
     validate(
       need(
-        expr = input$plantingDate <= input$endDate, 
+        expr = input$startDate <= input$endDate, 
         message = "Please select a 'Planting Date' that is earlier than or the same as the 'End Date'."
       ),
       errorClass = "datepicker"
     )
     
-    figureTitle <- fxnFigureTitle(inData = dataAZMetDataSumHUs(), endDate = input$endDate)
+    figureTitle <- fxnFigureTitle(inData = dataAZMetDataSumChill(), endDate = input$endDate)
   })
   
   # Outputs -----

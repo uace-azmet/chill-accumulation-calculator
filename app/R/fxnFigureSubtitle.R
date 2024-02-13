@@ -1,7 +1,7 @@
 #' `fxnFigureSubtitle.R` - Build subtitle for figure based on user input
 #' 
 #' @param azmetStation - AZMet station selection by user
-#' @param startDate - Planting date of period of interest
+#' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
 #' @return `figureSubtitle` - Subtitle for figure based on selected AZMet station
 

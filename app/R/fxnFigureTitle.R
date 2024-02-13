@@ -1,25 +1,25 @@
 #' `fxnFigureTitle.R` - Build title for figure based on user input
 #' 
-#' @param inData - data table of seasonal heat accumulation values by year
+#' @param inData - data table of seasonal chill accumulation values by year
 #' @param endDate - End date of period of interest
 #' @return `figureTitle` - Title for figure based on selected station
 
 
 fxnFigureTitle <- function(inData, endDate) {
   currentYear <- lubridate::year(endDate)
-  currentYearHUs <- 
-    inData$heat_units_55F_cumulative[which(inData$date_year == currentYear)]
+  currentYearChill <- 
+    inData$chillSum[which(inData$date_year == currentYear)]
   
   previousYear <- currentYear - 1
-  previousYearHUs <- 
-    inData$heat_units_55F_cumulative[which(inData$date_year == previousYear)]
+  previousYearChill <- 
+    inData$chillSum[which(inData$date_year == previousYear)]
   
   if (nrow(inData) < 2) {
     figureTitle <- 
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Heat Accumulation in", currentYear,
+            "Chill Accumulation in", currentYear,
             sep = " "
           ),
         ),
@@ -27,9 +27,9 @@ fxnFigureTitle <- function(inData, endDate) {
         class = "figure-title"
       )
   } else {
-    if (currentYearHUs > (previousYearHUs + (0.1 * previousYearHUs))) {
+    if (currentYearChill > (previousYearChill + (0.1 * previousYearChill))) {
       comparisonText <- "Greater than"
-    } else if (currentYearHUs < (previousYearHUs - (0.1 * previousYearHUs))) {
+    } else if (currentYearChill < (previousYearChill - (0.1 * previousYearChill))) {
       comparisonText <- "Less than"
     } else {
       comparisonText <- "Similar to"
@@ -39,7 +39,7 @@ fxnFigureTitle <- function(inData, endDate) {
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Heat Accumulation in", currentYear, comparisonText, "That in", previousYear,
+            "Chill Accumulation in", currentYear, comparisonText, "That in", previousYear,
             sep = " "
           ),
         ),
