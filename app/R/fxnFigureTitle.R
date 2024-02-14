@@ -2,24 +2,25 @@
 #' 
 #' @param inData - data table of seasonal chill accumulation values by year
 #' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selection by user
 #' @return `figureTitle` - Title for figure based on selected station
 
 
-fxnFigureTitle <- function(inData, endDate) {
+fxnFigureTitle <- function(inData, endDate, chillVariable) {
   currentYear <- lubridate::year(endDate)
   currentYearChill <- 
-    inData$chillSum[which(inData$date_year == currentYear)]
+    inData$chillSum[which(inData$endDateYear == currentYear)]
   
   previousYear <- currentYear - 1
   previousYearChill <- 
-    inData$chillSum[which(inData$date_year == previousYear)]
+    inData$chillSum[which(inData$endDateYear == previousYear)]
   
   if (nrow(inData) < 2) {
     figureTitle <- 
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Chill Accumulation in", currentYear,
+            "Total Number of", chillVariable, "in", currentYear,
             sep = " "
           ),
         ),
@@ -39,7 +40,7 @@ fxnFigureTitle <- function(inData, endDate) {
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Chill Accumulation in", currentYear, comparisonText, "That in", previousYear,
+            "Total Number of", chillVariable, "in", currentYear, "Is", comparisonText, "That in", previousYear,
             sep = " "
           ),
         ),

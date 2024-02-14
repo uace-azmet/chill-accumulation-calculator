@@ -21,6 +21,7 @@ fxnAZMetDataSumChill <- function(inData, azmetStation, startDate, endDate, chill
       dplyr::summarize(chill_hours_32F_cumulative = sum(chill_hours_32F, na.rm = TRUE)) %>%
       dplyr::rename(chillSum = chill_hours_32F_cumulative) %>%
       dplyr::mutate(chillSumLabel = format(round(chillSum, digits = 0), nsmall = 0)) %>%
+      dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
       dplyr::mutate(dateYearLabel = dateYear)
   } else if (chillVariable == "Hours below 45 °F") {
     dataAZMetDataSumChill <- inData %>%
@@ -28,6 +29,7 @@ fxnAZMetDataSumChill <- function(inData, azmetStation, startDate, endDate, chill
       dplyr::summarize(chill_hours_45F_cumulative = sum(chill_hours_45F, na.rm = TRUE)) %>%
       dplyr::rename(chillSum = chill_hours_45F_cumulative) %>%
       dplyr::mutate(chillSumLabel = format(round(chillSum, digits = 0), nsmall = 0)) %>%
+      dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
       dplyr::mutate(dateYearLabel = dateYear)
   } else if (chillVariable == "Hours above 68 °F") {
     dataAZMetDataSumChill <- inData %>%
@@ -35,6 +37,7 @@ fxnAZMetDataSumChill <- function(inData, azmetStation, startDate, endDate, chill
       dplyr::summarize(chill_hours_68F_cumulative = sum(chill_hours_68F, na.rm = TRUE)) %>%
       dplyr::rename(chillSum = chill_hours_68F_cumulative) %>%
       dplyr::mutate(chillSumLabel = format(round(chillSum, digits = 0), nsmall = 0)) %>%
+      dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
       dplyr::mutate(dateYearLabel = dateYear)
   }
   

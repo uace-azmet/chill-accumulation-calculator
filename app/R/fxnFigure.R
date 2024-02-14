@@ -9,50 +9,36 @@
 
 
 fxnFigure <- function(inData, azmetStation, startDate, endDate, chillVariable) {
-  hline <- data.frame(y = 0)
-  
   figure <- ggplot2::ggplot(
     data = inData, 
-    mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum)
+    mapping = aes(x = as.factor(.data$dateYearLabel), y = .data$chillSum)
   ) +
     
     geom_col( # Previous growing season
-      data = dplyr::filter(inData, inData$date_year < max(inData$date_year)), 
-      mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum), 
+      data = dplyr::filter(inData, inData$dateYearLabel < max(inData$dateYearLabel)), 
+      mapping = aes(x = as.factor(.data$dateYearLabel), y = .data$chillSum), 
       alpha = 1.0, fill = "#999999"
     ) +
     
     geom_col( # Current growing season
-      data = dplyr::filter(inData, inData$date_year == max(inData$date_year)), 
-      mapping = aes(x = as.factor(.data$date_year), y = .data$chillSum), 
+      data = dplyr::filter(inData, inData$dateYearLabel == max(inData$dateYearLabel)), 
+      mapping = aes(x = as.factor(.data$dateYearLabel), y = .data$chillSum), 
       alpha = 1.0, fill = "#001C48"
     ) +
     
-    geom_hline( # Cotton growth stages as cumulative heat units
-      data = hline, 
-      mapping = aes(yintercept = y), 
-      alpha = 1.0, color = "#CCCCCC", linetype = "solid", linewidth = 0.3
-    ) +
-    
     geom_label( # Previous growing season
-      data = dplyr::filter(inData, inData$date_year < max(inData$date_year)), 
+      data = dplyr::filter(inData, inData$dateYearLabel < max(inData$dateYearLabel)), 
       mapping = aes(label = .data$chillSumLabel, fontface = "bold"), 
       color = "#999999", fill = NA, label.size = NA, size = 3, vjust = 0.0
     ) +
     
     geom_label( # Current growing season
-      data = dplyr::filter(inData, inData$date_year == max(inData$date_year)), 
+      data = dplyr::filter(inData, inData$dateYearLabel == max(inData$dateYearLabel)), 
       mapping = aes(label = .data$chillSumLabel, fontface = "bold"), 
       color = "#001C48", fill = NA, label.size = NA, size = 3, vjust = 0.0
     ) + 
     
     labs(x = "\nYear", y = paste0(chillVariable,"\n")) +
-    
-    #scale_y_continuous(
-    #  breaks = dataCottonGrowthStages$huapValue, 
-    #  labels = dataCottonGrowthStages$huapValue,
-    #  expand = expansion(mult = c(0.01, 0.05))
-    #) +
     
     theme_minimal() +
     
@@ -127,10 +113,10 @@ fxnFigure <- function(inData, azmetStation, startDate, endDate, chillVariable) {
       #panel.spacing.x,
       #panel.spacing.y,
       #panel.grid,
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank()
-      #panel.grid.major.x,
-      #panel.grid.major.y,
+      #panel.grid.major,
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(color = "#CCCCCC", linetype = "solid", linewidth = 0.3),
       #panel.grid.minor.x,
       #panel.grid.minor.y,
       #panel.ontop,
