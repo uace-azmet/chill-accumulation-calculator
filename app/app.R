@@ -1,11 +1,6 @@
 
 
-# Calculate growing-season heat accumulation relative to cotton development
-
-# Add code for the following
-# 
-# 'azmet-shiny-template.html': <!-- Google tag (gtag.js) -->
-# 'azmet-shiny-template.html': <!-- CSS specific to this AZMet Shiny app -->
+# Calculate cumulative values of chill variables by station and date range
 
 # Edit the following [in square brackets]:
 # 
