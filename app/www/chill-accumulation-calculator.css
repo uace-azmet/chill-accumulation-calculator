@@ -29,7 +29,7 @@
 }
 
 .shiny-output-error-datepicker {
-  background-color: #dee2e6; border: 1px solid rgba(0,0,0,.125); border-radius: 0px; color: #343a40 !important; font-style: italic; padding: 20px;
+  background-color: #007D84; border: 1px solid rgba(0,0,0,.125); border-radius: 0px; color: #FFFFFF !important; font-weight: bold; font-style: italic; padding: 20px;
 }
 
 .shiny-notification {
@@ -38,15 +38,15 @@
 
 /* id */
 
-#calculateChillAccumulation {
+#calculateCumulativeValues {
   background-color: transparent; border-color: #001C48; color: #001C48;
 }
 
-#calculateChillAccumulation:active {
+#calculateCumulativeValues:active {
   background-color: #001C48; color: #fff;
 }
 
-#calculateChillAccumulation:hover {
+#calculateCumulativeValues:hover {
   background-color: #001C48; color: #fff;
 }
 

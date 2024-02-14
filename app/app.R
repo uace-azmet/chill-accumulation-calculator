@@ -43,7 +43,7 @@ ui <- htmltools::htmlTemplate(
       
       verticalLayout(
         helpText(em(
-          "Select an AZMet station, specify the chill-accumulation variable, and set dates for the start and end of the period of interest. Then, click or tap 'CALCULATE CHILL ACCUMULATION'."
+          "Select an AZMet station, specify the chill variable, and set dates for the start and end of the period of interest. Then, click or tap 'CALCULATE CUMULATIVE VALUES'."
         )),
         
         br(),
@@ -89,8 +89,8 @@ ui <- htmltools::htmlTemplate(
         
         br(),
         actionButton(
-          inputId = "calculateChillAccumulation", 
-          label = "CALCULATE CHILL ACCUMULATION",
+          inputId = "calculateCumulativeValues", 
+          label = "CALCULATE CUMULATIVE VALUES",
           class = "btn btn-block btn-blue"
         )
       )
@@ -133,21 +133,21 @@ server <- function(input, output, session) {
   # Reactive events -----
   
   # AZMet chill accumulation data
-  dataAZMetDataMerge <- eventReactive(input$calculateChillAccumulation, {
+  dataAZMetDataMerge <- eventReactive(input$calculateCumulativeValues, {
     validate(
       need(expr = input$startDate <= input$endDate, message = FALSE)
     )
     
-    idCalculatingChillAccumulation <- showNotification(
-      ui = "Calculating chill accumulation . . .", 
+    idCalculatingCumulativeValues <- showNotification(
+      ui = "Calculating cumulative values . . .", 
       action = NULL, 
       duration = NULL, 
       closeButton = FALSE,
-      id = "idCalculatingChillAccumulation",
+      id = "idCalculatingCumulativeValues",
       type = "message"
     )
     
-    on.exit(removeNotification(id = idCalculatingChillAccumulation), add = TRUE)
+    on.exit(removeNotification(id = idCalculatingCumulativeValues), add = TRUE)
     
     # Calls 'fxnAZMetDataELT()' and 'fxnAZMetDataSumChill()'
     fxnAZMetDataMerge(
@@ -180,7 +180,7 @@ server <- function(input, output, session) {
     )
   })
   
-  # Build table footer help text
+  # Build figure footer help text
   figureFooterHelpText <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureFooterHelpText()
   })
@@ -191,7 +191,7 @@ server <- function(input, output, session) {
   })
   
   # Build figure title
-  figureTitle <- eventReactive(input$calculateChillAccumulation, {
+  figureTitle <- eventReactive(input$calculateCumulativeValues, {
     validate(
       need(
         expr = input$startDate <= input$endDate, 
@@ -200,7 +200,10 @@ server <- function(input, output, session) {
       errorClass = "datepicker"
     )
     
-    figureTitle <- fxnFigureTitle(inData = dataAZMetDataMerge(), endDate = input$endDate)
+    figureTitle <- fxnFigureTitle(
+      inData = dataAZMetDataMerge(), 
+      endDate = input$endDate,
+      chillVariable = input$chillVariable)
   })
   
   # Outputs -----
