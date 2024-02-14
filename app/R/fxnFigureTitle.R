@@ -10,10 +10,12 @@ fxnFigureTitle <- function(inData, endDate, chillVariable) {
   currentYear <- lubridate::year(endDate)
   currentYearChill <- 
     inData$chillSum[which(inData$endDateYear == currentYear)]
+  currentYearChillText <- inData$dateYearLabel[which(inData$endDateYear == currentYear)]
   
   previousYear <- currentYear - 1
   previousYearChill <- 
     inData$chillSum[which(inData$endDateYear == previousYear)]
+  previousYearChillText <- inData$dateYearLabel[which(inData$endDateYear == previousYear)]
   
   if (nrow(inData) < 2) {
     figureTitle <- 
@@ -40,7 +42,7 @@ fxnFigureTitle <- function(inData, endDate, chillVariable) {
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Total Number of", chillVariable, "in", currentYear, "Is", comparisonText, "That in", previousYear,
+            "Total Number of", chillVariable, "in", currentYearChillText, "Is", comparisonText, "That in", previousYearChillText,
             sep = " "
           ),
         ),
