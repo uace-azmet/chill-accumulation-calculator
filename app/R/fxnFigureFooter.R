@@ -3,11 +3,12 @@
 #' @param azmetStation - AZMet station selection by user
 #' @param startDate - Planting date of period of interest
 #' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selection by user
 #' @param timeStep - AZMet data time step
 #' @return `figureFooter` - Footer for figure based on user input
 
 
-fxnFigureFooter <- function(azmetStation, startDate, endDate, timeStep) {
+fxnFigureFooter <- function(azmetStation, startDate, endDate, chillVariable, timeStep) {
   # Inputs
   apiURL <- a(
     "api.azmet.arizona.edu", 
@@ -61,7 +62,7 @@ fxnFigureFooter <- function(azmetStation, startDate, endDate, timeStep) {
       htmltools::p(
         htmltools::HTML(
           paste0(
-            "Chill accumulations are based on the sum of daily values for the current growing season (dark blue bar in graph) from", " ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " ", "through", " ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ".", " ", "Chill accumulation values for past seasons (gray bars in graph) are based on the same start and end dates, but during those respective years", ".", " ", "Cumulative chill data for the Yuma North Gila station are unavailable in 2021 after June 15.",  
+            "Chill accumulations are based on the sum of daily values of", " ", chillVariable, " ", "for the current growing season (dark blue bar in graph) from", " ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " ", "through", " ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ".", " ", "Chill accumulation values for past seasons (gray bars in graph) are based on the same start and end dates, but during those respective years", ".", " ", "Cumulative chill data for the Yuma North Gila station are unavailable in 2021 after June 15.",  
             br(), br(), 
             timeStep, " ", "AZMet data are from", " ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data", ".", " ", "More information about", " ", webpageDataVariables, ",", " ", webpageNetworkMap, ",", " ", "and", " ", webpageStationMetadata, " ", "is available on the", " ", webpageAZMet, ".", " ", "Users of AZMet data and data applications assume all risks of its use", ".",
             br(), br(),
@@ -76,7 +77,7 @@ fxnFigureFooter <- function(azmetStation, startDate, endDate, timeStep) {
       htmltools::p(
         htmltools::HTML(
           paste0(
-            "Chill accumulations are based on the sum of daily values for the current growing season (dark blue bar in graph) from", " ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " ", "through", " ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ".", " ", "Chill accumulation values for past seasons (gray bars in graph) are based on the same start and end dates, but during those respective years", ".", " ",  
+            "Chill accumulations are based on the sum of daily values of", " ", chillVariable, " ", "for the current growing season (dark blue bar in graph) from", " ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " ", "through", " ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ".", " ", "Chill accumulation values for past seasons (gray bars in graph) are based on the same start and end dates, but during those respective years", ".", " ",  
             br(), br(), 
             timeStep, " ", "AZMet data are from", " ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data", ".", " ", "More information about", " ", webpageDataVariables, ",", " ", webpageNetworkMap, ",", " ", "and", " ", webpageStationMetadata, " ", "is available on the", " ", webpageAZMet, ".", " ", "Users of AZMet data and data applications assume all risks of its use", ".",
             br(), br(),

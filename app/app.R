@@ -174,7 +174,8 @@ server <- function(input, output, session) {
     fxnFigureFooter(
       azmetStation = input$azmetStation,
       startDate = input$startDate, 
-      endDate = input$endDate, 
+      endDate = input$endDate,
+      chillVariable = input$chillVariable, 
       timeStep = "Daily"
     )
   })
@@ -194,7 +195,7 @@ server <- function(input, output, session) {
     validate(
       need(
         expr = input$startDate <= input$endDate, 
-        message = "Please select a 'Planting Date' that is earlier than or the same as the 'End Date'."
+        message = "Please select a 'Start Date' that is earlier than or the same as the 'End Date'."
       ),
       errorClass = "datepicker"
     )

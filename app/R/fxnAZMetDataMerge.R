@@ -7,7 +7,7 @@
 #' @return `dataAZMetDataMerge` - merged data tables from individual years
 
 
-fxnAZMetDataMerge <- function(azmetStation, startDate, endDate) {
+fxnAZMetDataMerge <- function(azmetStation, startDate, endDate, chillVariable) {
   azmetStationStartDate <- lubridate::as_date("2021-01-01") # Placeholder for station start date
   
   while (startDate >= azmetStationStartDate) {
@@ -31,7 +31,7 @@ fxnAZMetDataMerge <- function(azmetStation, startDate, endDate) {
       )
       
       if (exists("dataAZMetDataMerge") == FALSE) {
-        dataAZMetDataMerge <- dataAZMetDataSumChill
+        dataAZMetDataMerge <- dataAZMetDataSumChill()
       } else {
         dataAZMetDataMerge <- rbind(dataAZMetDataMerge, dataAZMetDataSumChill)
       }
@@ -41,13 +41,11 @@ fxnAZMetDataMerge <- function(azmetStation, startDate, endDate) {
     }
   }
   
+  # For case of missing data from Yuma North Gila
+  if (azmetStation == "Yuma North Gila" && endDate >= lubridate::as_date(paste0(lubridate::year(endDate), "-06-16"))) {
+    dataAZMetDataMerge <- dataAZMetDataMerge %>%
+      dplyr::filter(date_year != 2021)
+  }
+  
   return(dataAZMetDataMerge)
-}
-
-
-
-# For case of missing data from Yuma North Gila
-if (azmetStation == "Yuma North Gila" && endDate >= lubridate::as_date(paste0(lubridate::year(endDate), "-06-16"))) {
-  dataAZMetDataMerge <- dataAZMetDataMerge %>%
-    dplyr::filter(date_year != 2021)
 }
