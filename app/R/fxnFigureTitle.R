@@ -42,7 +42,7 @@ fxnFigureTitle <- function(inData, endDate, chillVariable) {
       htmltools::h4(
         htmltools::HTML(
           paste(
-            "Total Number of", chillVariable, "in", currentYearChillText, "Is", comparisonText, "That in", previousYearChillText,
+            "Total Number of", chillVariable, "in", currentYearChillText, comparisonText, "That in", previousYearChillText,
             sep = " "
           ),
         ),

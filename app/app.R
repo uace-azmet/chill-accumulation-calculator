@@ -2,11 +2,6 @@
 
 # Calculate cumulative values of chill variables by station and date range
 
-# Edit the following [in square brackets]:
-# 
-# 'azmet-shiny-template.html': <article role="article" about="[/application-areas]" class="node node--type-az-flexible-page node--view-mode-full clearfix">
-
-
 # Libraries
 library(azmetr)
 library(dplyr)
