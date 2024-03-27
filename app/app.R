@@ -190,7 +190,7 @@ server <- function(input, output, session) {
       errorClass = "datepicker"
     )
     
-    figureTitle <- fxnFigureTitle(
+    fxnFigureTitle(
       inData = dataAZMetDataMerge(), 
       endDate = input$endDate,
       chillVariable = input$chillVariable)
