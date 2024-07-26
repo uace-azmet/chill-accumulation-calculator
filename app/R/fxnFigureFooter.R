@@ -68,7 +68,7 @@ fxnFigureFooter <- function(azmetStation, startDate, endDate, chillVariable, tim
     htmltools::p(
       htmltools::HTML(
         paste0(
-          "Cumulative values are based on the sum of daily values of ", chillVariableText, " for the current growing season (dark gray bar in graph) from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Chill accumulation values for past seasons (gray bars in graph) are based on the same start and end month and day, but during those respective years.",
+          "Cumulative totals are based on the sum of daily totals of ", chillVariableText, " for the current growing season (dark gray bar in graph) from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Chill accumulation totals for past seasons (gray bars in graph) are based on the same start and end month and day, but during those respective years.",
           br(), br(), 
           timeStep, " AZMet data are from ", apiURL, " and accessed using the ", azmetrURL, " R package. Values from recent dates may be based on provisional data. More information about ", webpageDataVariables, ", ", webpageNetworkMap, ", and ", webpageStationMetadata, " is available on the ", webpageAZMet, ". Users of AZMet data and related information assume all risks of its use.",
           br(), br(),
