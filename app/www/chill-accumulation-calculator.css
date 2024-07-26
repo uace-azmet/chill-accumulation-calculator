@@ -42,15 +42,15 @@
 
 /* id */
 
-#calculateCumulativeValues {
+#calculateChillAccumulation {
   background-color: transparent; border-color: #001C48; color: #001C48;
 }
 
-#calculateCumulativeValues:active {
+#calculateChillAccumulation:active {
   background-color: #001C48; color: #fff;
 }
 
-#calculateCumulativeValues:hover {
+#calculateChillAccumulation:hover {
   background-color: #001C48; color: #fff;
 }
 

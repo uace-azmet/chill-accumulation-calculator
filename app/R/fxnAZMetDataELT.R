@@ -12,7 +12,7 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
   # HOURLY
   if (timeStep == "Hourly") {
     dataAZMetDataELT <- azmetr::az_hourly(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID,
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID,
       start_date_time = paste(startDate, "01", sep = " "),
       end_date_time = paste(endDate, "24", sep = " ")
     )
@@ -40,7 +40,7 @@ fxnAZMetDataELT <- function(azmetStation, timeStep, startDate, endDate) {
   # DAILY
   if (timeStep == "Daily") {
     dataAZMetDataELT <- azmetr::az_daily(
-      station_id = dplyr::filter(stationNames, stationName == azmetStation)$stationID, 
+      station_id = dplyr::filter(azmetStations, stationName == azmetStation)$stationID, 
       start_date = startDate, 
       end_date = endDate
     )

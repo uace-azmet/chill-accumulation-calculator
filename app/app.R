@@ -66,7 +66,7 @@ ui <- htmltools::htmlTemplate(
           inputId = "endDate",
           label = "End Date",
           value = initialEndDate,
-          min = Sys.Date() + 1 - lubridate::years(1),
+          min = Sys.Date() - lubridate::years(1),
           max = initialEndDate,
           format = "MM d, yyyy",
           startview = "month",
@@ -157,7 +157,8 @@ server <- function(input, output, session) {
       inData = dataAZMetDataMerge(), 
       azmetStation = input$azmetStation,
       startDate = input$startDate, 
-      endDate = input$endDate
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
     )
   })
   
@@ -190,6 +191,7 @@ server <- function(input, output, session) {
   figureSubtitle <- eventReactive(dataAZMetDataMerge(), {
     fxnFigureSubtitle(
       azmetStation = input$azmetStation, 
+      inData = dataAZMetDataMerge(), 
       startDate = input$startDate, 
       endDate = input$endDate
     )
