@@ -10,7 +10,9 @@ azmetStations <- vroom::vroom(
 azmetStations <- azmetStations |>
   dplyr::filter(stationName != "Mohave ETo") |>
   dplyr::filter(stationName != "Wellton ETo") |>
-  dplyr::filter(stationName != "Yuma Valley ETo")
+  dplyr::filter(stationName != "Yuma Valley ETo") |>
+  dplyr::filter(stationName != "Chino Valley") |>
+  dplyr::filter(stationName != "Elgin")
 
 # Set auxiliary variables
 apiStartDate <- as.Date("2021-01-01")
