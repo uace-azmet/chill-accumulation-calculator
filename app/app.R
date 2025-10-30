@@ -25,7 +25,7 @@ ui <- htmltools::htmlTemplate(
         class = "border-0 rounded-0 shadow-none"
       ),
     
-    shiny::htmlOutput(outputId = "pageBottomText")
+    # shiny::htmlOutput(outputId = "pageBottomText")
   )
 )
 
@@ -40,55 +40,55 @@ server <- function(input, output, session) {
   
   # Observables -----
   
-  shiny::observeEvent(input$azmetStation, {
-    stationStartDate <-
-      dplyr::filter(
-        azmetStationMetadata,
-        meta_station_name == input$azmetStation
-      )$start_date
-    
-    if (stationStartDate > Sys.Date() - lubridate::years(1)) {
-      stationStartDateMinimum <- stationStartDate
-      stationEndDateMinimum <- stationStartDate
-    } else {
-      stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
-      stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
-    }
-    
-    if (stationStartDate > input$startDate) {
-      stationStartDateSelected <- stationStartDate
-    } else {
-      stationStartDateSelected <- input$startDate
-    }
-    
-    if (stationStartDate > input$endDate) {
-      stationEndDateSelected <- stationStartDate
-    } else {
-      stationEndDateSelected <- input$endDate
-    }
-    
-    shiny::updateDateInput(
-      inputId = "startDate",
-      label = "Start Date",
-      value = stationStartDateSelected,
-      min = stationStartDateMinimum,
-      max = Sys.Date() - 1
-    )
-    
-    shiny::updateDateInput(
-      inputId = "endDate",
-      label = "End Date",
-      value = stationEndDateSelected,
-      min = stationEndDateMinimum,
-      max = Sys.Date() - 1
-    )
-  })
+  # shiny::observeEvent(input$azmetStation, {
+  #   stationStartDate <-
+  #     dplyr::filter(
+  #       azmetStationMetadata,
+  #       meta_station_name == input$azmetStation
+  #     )$start_date
+  #   
+  #   if (stationStartDate > Sys.Date() - lubridate::years(1)) {
+  #     stationStartDateMinimum <- stationStartDate
+  #     stationEndDateMinimum <- stationStartDate
+  #   } else {
+  #     stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
+  #     stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
+  #   }
+  #   
+  #   if (stationStartDate > input$startDate) {
+  #     stationStartDateSelected <- stationStartDate
+  #   } else {
+  #     stationStartDateSelected <- input$startDate
+  #   }
+  #   
+  #   if (stationStartDate > input$endDate) {
+  #     stationEndDateSelected <- stationStartDate
+  #   } else {
+  #     stationEndDateSelected <- input$endDate
+  #   }
+  #   
+  #   shiny::updateDateInput(
+  #     inputId = "startDate",
+  #     label = "Start Date",
+  #     value = stationStartDateSelected,
+  #     min = stationStartDateMinimum,
+  #     max = Sys.Date() - 1
+  #   )
+  #   
+  #   shiny::updateDateInput(
+  #     inputId = "endDate",
+  #     label = "End Date",
+  #     value = stationEndDateSelected,
+  #     min = stationEndDateMinimum,
+  #     max = Sys.Date() - 1
+  #   )
+  # })
   
-  shiny::observeEvent(input$calculateTotal, {
-    if (input$startDate > input$endDate) {
-      shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
-    }
-  })
+  # shiny::observeEvent(input$calculateTotal, {
+  #   if (input$startDate > input$endDate) {
+  #     shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
+  #   }
+  # })
   
   # shiny::observeEvent(seasonalTotals(), { ###commented out
   #   shinyjs::showElement("pageBottomText")
@@ -127,13 +127,13 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  pageBottomText <- shiny::eventReactive(seasonalTotals(), {
-    fxn_pageBottomText(
-      startDate = input$startDate,
-      endDate = input$endDate,
-      etEquation = input$etEquation
-    )
-  })
+  # pageBottomText <- shiny::eventReactive({#seasonalTotals(), {
+  #   fxn_pageBottomText(
+  #     startDate = input$startDate,
+  #     endDate = input$endDate,
+  #     chillVariable = input$chillVariable
+  #   )
+  # })
   
   # seasonalTotals <- shiny::eventReactive(input$calculateTotal, {
   #   shiny::validate(
@@ -184,9 +184,9 @@ server <- function(input, output, session) {
   #   figureTitle()
   # })
   
-  output$pageBottomText <- shiny::renderUI({
-    pageBottomText()
-  })
+  # output$pageBottomText <- shiny::renderUI({
+  #   pageBottomText()
+  # })
 }
 
 
