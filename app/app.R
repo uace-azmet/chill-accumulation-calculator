@@ -109,7 +109,8 @@ server <- function(input, output, session) {
     fxn_figureCaption(
       azmetStation = input$azmetStation,
       startDate = input$startDate,
-      endDate = input$endDate
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
     )
   })
   
@@ -129,11 +130,7 @@ server <- function(input, output, session) {
   })
   
   pageBottomText <- shiny::eventReactive(seasonalTotals(), {
-    fxn_pageBottomText(
-      startDate = input$startDate,
-      endDate = input$endDate,
-      chillVariable = input$chillVariable
-    )
+    fxn_pageBottomText()
   })
   
   seasonalTotals <- shiny::eventReactive(input$calculateTotal, {

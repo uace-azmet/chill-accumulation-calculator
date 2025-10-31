@@ -302,7 +302,7 @@ fxn_figure <- function(inData, azmetStation) {
           title = list(
             font = list(size = 14),
             standoff = 25,
-            text = "hours"
+            text = "Hours"
           ),
           zeroline = TRUE,
           zerolinecolor = "#c9c9c9"

@@ -1,6 +1,6 @@
-#' `fxn_seasonalTotals` - combines seasonal chill accumulation from individual years
+#' `fxn_seasonalTotals` - Combines seasonal chill accumulation from individual years
 #' 
-#' @param azmetStation - AZMet station selection by user
+#' @param azmetStation - AZMet station selected by user
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
 #' @param chillVariable - Chill variable selected by user

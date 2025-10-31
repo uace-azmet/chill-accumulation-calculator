@@ -37,7 +37,7 @@ sidebar <- bslib::sidebar(
     inputId = "chillVariable",
     label = "Chill Variable",
     choices = chillVariables,
-    selected = "Hours below 32 °F"
+    selected = chillVariables[1]
   ),
   
   shiny::dateInput(
