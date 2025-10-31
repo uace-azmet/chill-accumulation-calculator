@@ -25,7 +25,7 @@ ui <- htmltools::htmlTemplate(
         class = "border-0 rounded-0 shadow-none"
       ),
     
-    # shiny::htmlOutput(outputId = "pageBottomText")
+    shiny::htmlOutput(outputId = "pageBottomText")
   )
 )
 
@@ -127,13 +127,13 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  # pageBottomText <- shiny::eventReactive({#seasonalTotals(), {
-  #   fxn_pageBottomText(
-  #     startDate = input$startDate,
-  #     endDate = input$endDate,
-  #     chillVariable = input$chillVariable
-  #   )
-  # })
+  pageBottomText <- shiny::eventReactive({#seasonalTotals(), {
+    fxn_pageBottomText(
+      startDate = input$startDate,
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
+    )
+  })
   
   # seasonalTotals <- shiny::eventReactive(input$calculateTotal, {
   #   shiny::validate(
@@ -184,9 +184,9 @@ server <- function(input, output, session) {
   #   figureTitle()
   # })
   
-  # output$pageBottomText <- shiny::renderUI({
-  #   pageBottomText()
-  # })
+  output$pageBottomText <- shiny::renderUI({
+    pageBottomText()
+  })
 }
 
 
