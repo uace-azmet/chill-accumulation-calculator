@@ -17,7 +17,7 @@ ui <- htmltools::htmlTemplate(
       
       shiny::htmlOutput(outputId = "figureTitle"),
       shiny::htmlOutput(outputId = "figureSummary"),
-      # plotly::plotlyOutput(outputId = "figure"),
+      plotly::plotlyOutput(outputId = "figure"),
       shiny::htmlOutput(outputId = "figureCaption")
     ) |>
       htmltools::tagAppendAttributes(
@@ -35,8 +35,8 @@ ui <- htmltools::htmlTemplate(
 
 server <- function(input, output, session) {
   
-  # shinyjs::useShinyjs(html = TRUE) ###commented out
-  # shinyjs::hideElement("pageBottomText") ###commented out
+  # shinyjs::useShinyjs(html = TRUE)
+  # shinyjs::hideElement("pageBottomText")
   
   
   # Observables -----
@@ -91,19 +91,19 @@ server <- function(input, output, session) {
     }
   })
   
-  # shiny::observeEvent(seasonalTotals(), { ###commented out
+  # shiny::observeEvent(seasonalTotals(), {
   #   shinyjs::showElement("pageBottomText")
   # })
   
   
   # Reactives -----
   
-  # figure <- shiny::eventReactive(seasonalTotals(), {
-  #   fxn_figure(
-  #     inData = seasonalTotals(),
-  #     azmetStation = input$azmetStation
-  #   )
-  # })
+  figure <- shiny::eventReactive(seasonalTotals(), {
+    fxn_figure(
+      inData = seasonalTotals(),
+      azmetStation = input$azmetStation
+    )
+  })
   
   figureCaption <- shiny::eventReactive(seasonalTotals(), {
     fxn_figureCaption(
@@ -169,9 +169,9 @@ server <- function(input, output, session) {
   
   # Outputs -----
   
-  # output$figure <- plotly::renderPlotly({
-  #   figure()
-  # })
+  output$figure <- plotly::renderPlotly({
+    figure()
+  })
   
   output$figureCaption <- shiny::renderUI({
     figureCaption()

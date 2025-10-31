@@ -146,18 +146,6 @@
   box-shadow: 0 0 0 0.1rem #0000001A;
 }
 
-/* .help-block {
-  color: #989898 !important;
-  font-size: 0.95rem;
-  font-style: italic;
-  font-weight: normal;
-} */
-
-/* https://github.com/plotly/plotly.js/issues/2342
-.hovertext {
-  fill-opacity: 0.85;
-} */
-
 .main.bslib-gap-spacing.html-fill-container {
   padding-bottom: 24px;
   padding-left: 24px;
