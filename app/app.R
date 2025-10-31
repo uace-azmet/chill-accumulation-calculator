@@ -128,7 +128,7 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  pageBottomText <- shiny::eventReactive(az_daily(), {
+  pageBottomText <- shiny::eventReactive(seasonalTotals(), {
     fxn_pageBottomText(
       startDate = input$startDate,
       endDate = input$endDate,
@@ -136,7 +136,7 @@ server <- function(input, output, session) {
     )
   })
   
-  az_daily <- shiny::eventReactive(input$calculateTotal, {
+  seasonalTotals <- shiny::eventReactive(input$calculateTotal, {
     shiny::validate(
       shiny::need(
         expr = input$startDate <= input$endDate,
@@ -158,14 +158,12 @@ server <- function(input, output, session) {
       add = TRUE
     )
     
-    azmetr::az_daily()
-
-    # fxn_seasonalTotals( # calls `fxn_dailyData.R` and `fxn_etTotal.R`
-    #   azmetStation = input$azmetStation,
-    #   startDate = input$startDate,
-    #   endDate = input$endDate,
-    #   etEquation = input$etEquation
-    # )
+    fxn_seasonalTotals( # calls `fxn_azDaily.R` and `fxn_chillTotal.R`
+      azmetStation = input$azmetStation,
+      startDate = input$startDate,
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
+    )
   })
   
   
