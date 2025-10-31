@@ -16,9 +16,9 @@ ui <- htmltools::htmlTemplate(
       sidebar = sidebar, # `scr##_sidebar.R`
       
       shiny::htmlOutput(outputId = "figureTitle"),
-      shiny::htmlOutput(outputId = "figureSummary")#,
+      shiny::htmlOutput(outputId = "figureSummary"),
       # plotly::plotlyOutput(outputId = "figure"),
-      # shiny::htmlOutput(outputId = "figureFooter")
+      shiny::htmlOutput(outputId = "figureCaption")
     ) |>
       htmltools::tagAppendAttributes(
         #https://getbootstrap.com/docs/5.0/utilities/api/
@@ -105,13 +105,13 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  # figureFooter <- shiny::eventReactive(seasonalTotals(), {
-  #   fxn_figureFooter(
-  #     azmetStation = input$azmetStation,
-  #     startDate = input$startDate,
-  #     endDate = input$endDate
-  #   )
-  # })
+  figureCaption <- shiny::eventReactive(seasonalTotals(), {
+    fxn_figureCaption(
+      azmetStation = input$azmetStation,
+      startDate = input$startDate,
+      endDate = input$endDate
+    )
+  })
   
   figureSummary <- shiny::eventReactive(seasonalTotals(), {
     fxn_figureSummary(
@@ -173,9 +173,9 @@ server <- function(input, output, session) {
   #   figure()
   # })
   
-  # output$figureFooter <- shiny::renderUI({
-  #   figureFooter()
-  # })
+  output$figureCaption <- shiny::renderUI({
+    figureCaption()
+  })
   
   output$figureSummary <- shiny::renderUI({
     figureSummary()
