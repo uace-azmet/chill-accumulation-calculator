@@ -123,7 +123,7 @@
       "RemoteUsername": "uace-azmet",
       "RemoteRepo": "azmetr",
       "RemoteRef": "main",
-      "RemoteSha": "041cd4ec5e83ed3f076d656bb7102955c33bfba6",
+      "RemoteSha": "8505485ab5eb39da55d45e2f16f9f30a1add211a",
       "Requirements": [
         "R",
         "attempt",
@@ -137,7 +137,7 @@
         "tibble",
         "tidyselect"
       ],
-      "Hash": "f41db81fede85edfd04acee220d1fd30"
+      "Hash": "a94a3e11f344c2e223a563413cdc7970"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -211,7 +211,7 @@
       "Package": "commonmark",
       "Version": "1.9.5",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "4ac08754c8ed35996b7c343fbb22885a"
     },
     "cpp11": {
@@ -448,7 +448,7 @@
       "Package": "httpuv",
       "Version": "1.6.16",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -478,7 +478,7 @@
       "Package": "httr2",
       "Version": "1.1.2",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -909,9 +909,9 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.11.0",
+      "Version": "1.11.1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "R6",
@@ -938,7 +938,7 @@
         "withr",
         "xtable"
       ],
-      "Hash": "011db3556755012e632ed99d083d7d75"
+      "Hash": "1c1a2437351984ff592639ae28cda09e"
     },
     "snowflakeauth": {
       "Package": "snowflakeauth",

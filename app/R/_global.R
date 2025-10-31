@@ -130,20 +130,20 @@ dailyVarsMeasured <-
     # "wind_spd_mean_mps", 
     # "wind_vector_dir", 
     # "wind_vector_dir_stand_dev", 
-    "wind_vector_magnitude"
+    # "wind_vector_magnitude"
   )
-
-# if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
-#   initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
-# } else {
-#   initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
-# }
 
 activeStations <-
   dplyr::filter(
     azmetStationMetadata,
     status == "active"
   )
+
+if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
+  initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
+} else {
+  initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
+}
 
 initialStation <-
   dplyr::filter(

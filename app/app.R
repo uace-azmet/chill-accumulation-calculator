@@ -34,61 +34,62 @@ ui <- htmltools::htmlTemplate(
 
 
 server <- function(input, output, session) {
+  
   # shinyjs::useShinyjs(html = TRUE) ###commented out
   # shinyjs::hideElement("pageBottomText") ###commented out
   
   
   # Observables -----
   
-  # shiny::observeEvent(input$azmetStation, {
-  #   stationStartDate <-
-  #     dplyr::filter(
-  #       azmetStationMetadata,
-  #       meta_station_name == input$azmetStation
-  #     )$start_date
-  #   
-  #   if (stationStartDate > Sys.Date() - lubridate::years(1)) {
-  #     stationStartDateMinimum <- stationStartDate
-  #     stationEndDateMinimum <- stationStartDate
-  #   } else {
-  #     stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
-  #     stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
-  #   }
-  #   
-  #   if (stationStartDate > input$startDate) {
-  #     stationStartDateSelected <- stationStartDate
-  #   } else {
-  #     stationStartDateSelected <- input$startDate
-  #   }
-  #   
-  #   if (stationStartDate > input$endDate) {
-  #     stationEndDateSelected <- stationStartDate
-  #   } else {
-  #     stationEndDateSelected <- input$endDate
-  #   }
-  #   
-  #   shiny::updateDateInput(
-  #     inputId = "startDate",
-  #     label = "Start Date",
-  #     value = stationStartDateSelected,
-  #     min = stationStartDateMinimum,
-  #     max = Sys.Date() - 1
-  #   )
-  #   
-  #   shiny::updateDateInput(
-  #     inputId = "endDate",
-  #     label = "End Date",
-  #     value = stationEndDateSelected,
-  #     min = stationEndDateMinimum,
-  #     max = Sys.Date() - 1
-  #   )
-  # })
+  shiny::observeEvent(input$azmetStation, {
+    stationStartDate <-
+      dplyr::filter(
+        azmetStationMetadata,
+        meta_station_name == input$azmetStation
+      )$start_date
+
+    if (stationStartDate > Sys.Date() - lubridate::years(1)) {
+      stationStartDateMinimum <- stationStartDate
+      stationEndDateMinimum <- stationStartDate
+    } else {
+      stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
+      stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
+    }
+
+    if (stationStartDate > input$startDate) {
+      stationStartDateSelected <- stationStartDate
+    } else {
+      stationStartDateSelected <- input$startDate
+    }
+
+    if (stationStartDate > input$endDate) {
+      stationEndDateSelected <- stationStartDate
+    } else {
+      stationEndDateSelected <- input$endDate
+    }
+
+    shiny::updateDateInput(
+      inputId = "startDate",
+      label = "Start Date",
+      value = stationStartDateSelected,
+      min = stationStartDateMinimum,
+      max = Sys.Date() - 1
+    )
+
+    shiny::updateDateInput(
+      inputId = "endDate",
+      label = "End Date",
+      value = stationEndDateSelected,
+      min = stationEndDateMinimum,
+      max = Sys.Date() - 1
+    )
+  })
   
-  # shiny::observeEvent(input$calculateTotal, {
-  #   if (input$startDate > input$endDate) {
-  #     shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
-  #   }
-  # })
+  shiny::observeEvent(input$calculateTotal, {
+    if (input$startDate > input$endDate) {
+      shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
+    }
+  })
   
   # shiny::observeEvent(seasonalTotals(), { ###commented out
   #   shinyjs::showElement("pageBottomText")
@@ -127,7 +128,7 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  pageBottomText <- shiny::eventReactive({#seasonalTotals(), {
+  pageBottomText <- shiny::eventReactive(az_daily(), {
     fxn_pageBottomText(
       startDate = input$startDate,
       endDate = input$endDate,
@@ -135,35 +136,37 @@ server <- function(input, output, session) {
     )
   })
   
-  # seasonalTotals <- shiny::eventReactive(input$calculateTotal, {
-  #   shiny::validate(
-  #     shiny::need(
-  #       expr = input$startDate <= input$endDate,
-  #       message = FALSE
-  #     )
-  #   )
-  #   
-  #   idCalculateTotal <- shiny::showNotification(
-  #     ui = "Calculating total evapotranspiration . . .",
-  #     action = NULL,
-  #     duration = NULL,
-  #     closeButton = FALSE,
-  #     id = "idCalculateTotal",
-  #     type = "message"
-  #   )
-  #   
-  #   on.exit(
-  #     shiny::removeNotification(id = idCalculateTotal),
-  #     add = TRUE
-  #   )
-  #   
-  #   fxn_seasonalTotals( # calls `fxn_dailyData.R` and `fxn_etTotal.R`
-  #     azmetStation = input$azmetStation,
-  #     startDate = input$startDate,
-  #     endDate = input$endDate,
-  #     etEquation = input$etEquation
-  #   )
-  # })
+  az_daily <- shiny::eventReactive(input$calculateTotal, {
+    shiny::validate(
+      shiny::need(
+        expr = input$startDate <= input$endDate,
+        message = FALSE
+      )
+    )
+
+    idCalculateTotal <- shiny::showNotification(
+      ui = "Calculating chill accumulation . . .",
+      action = NULL,
+      duration = NULL,
+      closeButton = FALSE,
+      id = "idCalculateTotal",
+      type = "message"
+    )
+
+    on.exit(
+      shiny::removeNotification(id = idCalculateTotal),
+      add = TRUE
+    )
+    
+    azmetr::az_daily()
+
+    # fxn_seasonalTotals( # calls `fxn_dailyData.R` and `fxn_etTotal.R`
+    #   azmetStation = input$azmetStation,
+    #   startDate = input$startDate,
+    #   endDate = input$endDate,
+    #   etEquation = input$etEquation
+    # )
+  })
   
   
   # Outputs -----

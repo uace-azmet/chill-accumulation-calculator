@@ -43,7 +43,7 @@ sidebar <- bslib::sidebar(
   shiny::dateInput(
     inputId = "startDate",
     label = "Start Date",
-    value = Sys.Date() - lubridate::dweeks(x = 1),
+    value = initialStartDate,
     min = initialStartDateMinimum,
     max = Sys.Date() - 1,
     format = "MM d, yyyy",
