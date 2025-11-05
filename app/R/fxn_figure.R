@@ -15,7 +15,7 @@ fxn_figure <- function(inData, azmetStation) {
   
   # Inputs -----
   
-  averageTotal <- mean(inData$chillTotal, na.rm = TRUE)
+  averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 0)
   
   dataCurrentYear <- inData %>% 
     dplyr::filter(endDateYear == max(endDateYear)) %>%
@@ -231,12 +231,12 @@ fxn_figure <- function(inData, azmetStation) {
           align = "left",
           font = 
             list(
-              color = "#3b3b3b",
+              color = "#808080", #"#3b3b3b",
               family = layoutFontFamily,
               size = 14
             ),
           showarrow = FALSE,
-          text = paste("<b>Average: ", format(abs(round(averageTotal, digits = 2)), nsmall = 2), " hours</b>"),
+          text = paste("<b>Average: ", format(abs(round(averageTotal, digits = 0)), nsmall = 0), " hours</b>"),
           x = 0,
           xanchor = "left",
           xref = "paper",
@@ -273,7 +273,7 @@ fxn_figure <- function(inData, azmetStation) {
             type = "line",
             layer = "above",
             line = list(
-              color = "#3b3b3b", 
+              color = "#808080", #"#3b3b3b", 
               dash = "solid",
               width = 1
             ),

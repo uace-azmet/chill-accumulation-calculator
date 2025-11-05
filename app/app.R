@@ -108,6 +108,7 @@ server <- function(input, output, session) {
   figureCaption <- shiny::eventReactive(seasonalTotals(), {
     fxn_figureCaption(
       azmetStation = input$azmetStation,
+      inData = seasonalTotals(),
       startDate = input$startDate,
       endDate = input$endDate,
       chillVariable = input$chillVariable
