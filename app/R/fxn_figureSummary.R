@@ -25,7 +25,7 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
         class = "figure-summary"
       )
   } else {
-    averageTotal <- mean(inData$chillTotal, na.rm = TRUE)
+    averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 0)
     previousYear <- currentYear - 1
     previousYearText <- dplyr::filter(inData, endDateYear == previousYear)$dateYearLabel
     previousYearTotal <- dplyr::filter(inData, endDateYear == previousYear)$chillTotal
@@ -33,15 +33,15 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
     differenceAverage <- currentYearTotal - averageTotal
     differencePreviousYear <- currentYearTotal - previousYearTotal
     
-    if (round(differenceAverage, digits = 2) > 0) {
+    if (differenceAverage > 0) {
       differenceAverageText <- 
         paste0(
-          format(abs(round(differenceAverage, digits = 2)), nsmall = 2), " hours more than"
+          format(abs(round(differenceAverage, digits = 0)), nsmall = 0), " hours more than"
         )
-    } else if (round(differenceAverage, digits = 2) < 0) {
+    } else if (differenceAverage < 0) {
       differenceAverageText <- 
         paste0(
-          format(abs(round(differenceAverage, digits = 2)), nsmall = 2), " hours less than"
+          format(abs(round(differenceAverage, digits = 0)), nsmall = 0), " hours less than"
         )
     } else { # if (differenceAverage = 0)
       differenceAverageText <- "equal to"
