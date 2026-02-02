@@ -4,6 +4,7 @@
 library(azmetr)
 library(bsicons)
 library(bslib)
+library(chillR)
 library(dplyr)
 library(htmltools)
 library(lubridate)
