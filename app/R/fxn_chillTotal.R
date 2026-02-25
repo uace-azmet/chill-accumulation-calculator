@@ -55,6 +55,14 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
         dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
         dplyr::mutate(dateYearLabel = dateYearLabel)
+    } else if (chillVariable == "Hours between 32 and 45 °F") {
+      chillTotal <- inData %>%
+        dplyr::group_by(meta_station_name) %>%
+        dplyr::summarize(chill_hours_3245F_total = sum(chill_hours_3245F, na.rm = TRUE)) %>%
+        dplyr::rename(chillTotal = chill_hours_3245F_total) %>%
+        dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
+        dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
+        dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours above 68 °F") {
       chillTotal <- inData %>%
         dplyr::group_by(meta_station_name) %>%

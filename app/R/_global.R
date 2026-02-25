@@ -36,12 +36,24 @@ azmetStationMetadata <- azmetr::station_info |>
   ) |>
   dplyr::filter(!meta_station_name %in% c("Test"))
 
+activeStations <-
+  dplyr::filter(
+    azmetStationMetadata,
+    status == "active"
+  )
+
 chillVariables <- 
   c(
-    "Hours below 32 °F", 
+    "Chill Portions",
+    "Hours below 32 °F",
+    "Hours between 32 and 45 °F",
     "Hours below 45 °F", 
-    "Hours above 68 °F"
+    "Hours above 68 °F",
+    "Utah Model"
   )
+
+
+# Daily Data --
 
 # Derived (after data retrieved from station) variables
 dailyVarsDerived <- 
@@ -134,10 +146,64 @@ dailyVarsMeasured <-
     # "wind_vector_magnitude"
   )
 
-activeStations <-
-  dplyr::filter(
-    azmetStationMetadata,
-    status == "active"
+
+# Hourly Data --
+
+# Derived (after data retrievd from station) variables
+hourlyVarsDerived <- 
+  c(
+    # "dwpt", 
+    # "dwptF", 
+    # "eto_azmet", 
+    # "eto_azmet_in", 
+    # "heatstress_cottonC", 
+    # "heatstress_cottonF", 
+    # "precip_total_in", 
+    # "sol_rad_total_ly",
+    # "temp_airF", 
+    # "temp_soil_10cmF", 
+    # "temp_soil_50cmF", 
+    # "wind_2min_spd_max_mph", 
+    # "wind_2min_spd_mean_mph", 
+    # "wind_spd_max_mph", 
+    # "wind_spd_mph", 
+    # "wind_vector_magnitude_mph"
+  )
+
+# Identification and date variables
+hourlyVarsID <- 
+  c(
+    "date_datetime",
+    "date_doy",
+    "date_hour",
+    "date_year", 
+    "meta_needs_review", 
+    "meta_station_id", 
+    "meta_station_name", 
+    "meta_version"
+  )
+
+# Measured (or derived at station datalogger) variables
+hourlyVarsMeasured <- 
+  c(
+    # "meta_bat_volt", 
+    # "precip_total", 
+    # "relative_humidity", 
+    # "sol_rad_total", 
+    "temp_airC"#, 
+    # "temp_soil_10cmC", 
+    # "temp_soil_50cmC", 
+    # "vp_actual", 
+    # "vp_deficit", 
+    # "wind_2min_spd_max_mps", 
+    # "wind_2min_spd_mean_mps", 
+    # "wind_2min_timestamp", 
+    # "wind_2min_vector_dir", 
+    # "wind_spd_max_mps", 
+    # "wind_spd_mps", 
+    # "wind_vector_dir", 
+    # "wind_vector_dir_stand_dev", 
+    # "wind_vector_magnitude"
   )
 
 if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {

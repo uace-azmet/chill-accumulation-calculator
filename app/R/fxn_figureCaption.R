@@ -20,6 +20,8 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
     chillVariableText <- "hours below 32 °F"
   } else if (chillVariable == "Hours below 45 °F") {
     chillVariableText <- "hours below 45 °F"
+  } else if (chillVariable == "Hours between 32 and 45 °F") {
+    chillVariableText <- "hours between 32 and 45 °F"
   } else if (chillVariable == "Hours above 68 °F") {
     chillVariableText <- "hours above 68 °F"
   }
