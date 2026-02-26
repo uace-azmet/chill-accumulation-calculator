@@ -1,10 +1,11 @@
 #' `fxn_hourlyChillVarsToDaily.R` Compute chill values for variables dependent on hourly data
 #' 
 #' @param inData - returned output from `fxn_hourlyData.R`
+#' @param azmetStation - user-specified AZMet station
 #' @return `hourlyChillVarsToDaily` - Tibble of daily values for chill variables dependent on hourly data
 
 
-fxn_hourlyChillVarsToDaily <- function(inData) {
+fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
   hourlyChillVarsToDaily <- as.data.frame(inData) %>% 
     dplyr::rename(
       Year = date_year,
@@ -35,14 +36,9 @@ fxn_hourlyChillVarsToDaily <- function(inData) {
     dplyr::mutate(
       datetime = as.Date(as.character(YYMMDD), "%Y%m%d"),
       date_year = lapply(date_year, as.character),
-      date_doy = lubridate::yday(datetime)
-    ) #%>% 
-    # dplyr::group_by(winter) %>% 
-    # dplyr::mutate(
-    #   winter_day = dplyr::row_number(),
-    #   chill_portions_sum = cumsum(chill_portions)
-    # ) %>% 
-    # dplyr::ungroup()
+      date_doy = lubridate::yday(datetime),
+      meta_station_name = azmetStation
+    )
   
   return(hourlyChillVarsToDaily)
 }
