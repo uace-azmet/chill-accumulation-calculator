@@ -13,14 +13,15 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
     dplyr::filter(azmetStationMetadata, meta_station_name == azmetStation)$start_date
   
   if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-    azDaily <- 
+    azDaily <-  
       fxn_azHourly(
         azmetStation = azmetStation,
         startDate = azmetStationStartDate, # To call API only once
         endDate = endDate
-      ) #|>
-      # Calculate chill variables |>
-      # Reformat like output from `fxn_azDaily()`
+      ) %>% 
+      fxn_hourlyChillVarsToDaily(
+        inData = .
+      )
   } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
     azDaily <- 
       fxn_azDaily(
