@@ -35,7 +35,7 @@ fxn_hourlyChillVarsToDaily <- function(inData) {
     dplyr::mutate(
       datetime = as.Date(as.character(YYMMDD), "%Y%m%d"),
       date_year = lapply(date_year, as.character),
-      date_doy = lubridate::yday(date)
+      date_doy = lubridate::yday(datetime)
     ) #%>% 
     # dplyr::group_by(winter) %>% 
     # dplyr::mutate(
