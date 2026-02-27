@@ -4,28 +4,36 @@
 #' @param inData - data table of seasonal total evapotranspiration by year
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selected by user
 #' @return `figureSummary` - Summary of figure based on user inputs
 
 
-fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
+fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVariable) {
   
   currentYear <- lubridate::year(endDate)
   currentYearTotal <- dplyr::filter(inData, endDateYear == currentYear)$chillTotal
   
-  # For stations with only one year of data
-  if (nrow(inData) == 1) {
+  if (chillVariable == "Chill Portions") {
+    variableUnits <- "portions"
+  } else if (chillVariable == "Utah Model") {
+    variableUnits <- "units"
+  } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
+    variableUnits <- "hours"
+  }
+  
+  if (nrow(inData) == 1) { # For stations with only one year of data
     figureSummary <- 
       htmltools::p(
         htmltools::HTML(
           paste0(
-            "Chill accumulation at the AZMet ", azmetStation, " station from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), " is ", "<b>", format(round(currentYearTotal, digits = 0), nsmall = 0), " hours</b>."
+            "Chill accumulation at the AZMet ", azmetStation, " station from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), " is ", "<b>", format(round(currentYearTotal, digits = 0), nsmall = 0), " ", variableUnits, "</b>."
           ),
         ),
         
         class = "figure-summary"
       )
-  } else {
-    averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 0)
+  } else { # For stations with more than one year of data
+    averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 1)
     previousYear <- currentYear - 1
     previousYearText <- dplyr::filter(inData, endDateYear == previousYear)$dateYearLabel
     previousYearTotal <- dplyr::filter(inData, endDateYear == previousYear)$chillTotal
@@ -36,12 +44,12 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
     if (differenceAverage > 0) {
       differenceAverageText <- 
         paste0(
-          format(abs(round(differenceAverage, digits = 0)), nsmall = 0), " hours more than"
+          format(abs(round(differenceAverage, digits = 1)), nsmall = 1), " ", variableUnits, " more than"
         )
     } else if (differenceAverage < 0) {
       differenceAverageText <- 
         paste0(
-          format(abs(round(differenceAverage, digits = 0)), nsmall = 0), " hours less than"
+          format(abs(round(differenceAverage, digits = 1)), nsmall = 1), " ", variableUnits, " less than"
         )
     } else { # if (differenceAverage = 0)
       differenceAverageText <- "equal to"
@@ -52,12 +60,12 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
     } else if (differencePreviousYear > 0) {
       differencePreviousYearText <- 
         paste0(
-          format(abs(round(differencePreviousYear, digits = 0)), nsmall = 0), " hours more than"
+          format(abs(round(differencePreviousYear, digits = 0)), nsmall = 0), " ", variableUnits, " more than"
         )
     } else { # if (differencePreviousYear < 0)
       differencePreviousYearText <- 
         paste0(
-          format(abs(round(differencePreviousYear, digits = 0)), nsmall = 0), " hours less than"
+          format(abs(round(differencePreviousYear, digits = 0)), nsmall = 0), " ", variableUnits, " less than"
         )
     }
     
@@ -65,7 +73,7 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate) {
       htmltools::p(
         htmltools::HTML(
           paste0(
-            "Chill accumulation at the AZMet ", azmetStation, " station from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), " is ", "<b>", format(round(currentYearTotal, digits = 0), nsmall = 0), " hours</b>. This is ", differencePreviousYearText, " the accumulation during this same month-day period in ", previousYearText, ", and ", differenceAverageText, " the station average."
+            "Chill accumulation at the AZMet ", azmetStation, " station from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), " is ", "<b>", format(round(currentYearTotal, digits = 0), nsmall = 0), " ", variableUnits, "</b>. This is ", differencePreviousYearText, " the accumulation during this same month-day period in ", previousYearText, ", and ", differenceAverageText, " the station average."
           ),
         ),
         

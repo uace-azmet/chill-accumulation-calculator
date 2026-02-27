@@ -16,7 +16,9 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
       meta_station_name == azmetStation
     )$start_date
   
-  if (chillVariable == "Hours below 32 °F") {
+  if (chillVariable == "Chill Portions") {
+    chillVariableText <- "chill portions"
+  } else if (chillVariable == "Hours below 32 °F") {
     chillVariableText <- "hours below 32 °F"
   } else if (chillVariable == "Hours below 45 °F") {
     chillVariableText <- "hours below 45 °F"
@@ -24,17 +26,19 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
     chillVariableText <- "hours between 32 and 45 °F"
   } else if (chillVariable == "Hours above 68 °F") {
     chillVariableText <- "hours above 68 °F"
+  } else if (chillVariable == "Utah Model") {
+    chillVariableText <- "Utah chill units"
   }
   
   if (nrow(inData) == 1) {
-    standardText <- 
+    captionText <- 
       paste0(
         "Chill accumulation for the current year (black bar in graph) is based on the sum of daily totals of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", 
         gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")),
         "."
       )
   } else {
-    standardText <- 
+    captionText <- 
       paste0(
         "Chill accumulation for the current year (black bar in graph) is based on the sum of daily totals of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Accumulations for past years (gray bars in graph) are based on the same start and end month and day, but during those respective years. Average chill accumulation is calculated from values of all individual years shown above. Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", 
         gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")),
@@ -64,27 +68,66 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
     }
   }
   
-  # Generate figure footer based on presence/absence of non-operational dates
+  # Generate caption text based on presence/absence of non-operational dates
   if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
-    figureCaption <- 
-      htmltools::p(
-        htmltools::HTML(
-          paste(
-            standardText,
-            "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 10, 2021, when the ", azmetStation, " station was not in operation.",
-            sep = " "
-          )
-        ),
-        
-        class = "figure-footer"
+    captionText <- 
+      paste(
+        captionText,
+        "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 10, 2021, when the ", azmetStation, " station was not in operation.",
+        sep = " "
       )
   } else {
-    figureCaption <- 
-      htmltools::p(
-        htmltools::HTML(standardText), 
-        class = "figure-footer"
-      )
+    captionText <- captionText
   }
+  
+  # Generate caption text with `chillR` reference
+  if (chillVariable == "Chill Portions") {
+    captionText <- 
+      paste(
+        captionText,
+        "Chill portions are based on calculations in the `chillR` R package.",
+        sep = " "
+      )
+  } else if (chillVariable == "Utah Model") {
+    captionText <- 
+      paste(
+        captionText,
+        "Utah Model chill units are based on calculations in the `chillR` R package.",
+        sep = " "
+      )
+  } else {
+    captionText <- captionText
+  }
+  
+  # Format caption text as HTML
+  figureCaption <- 
+    htmltools::p(
+      htmltools::HTML(captionText), 
+      class = "figure-footer" # "figure-caption" class mixes with UA CSS
+    )
+  
+  
+  # Generate figure footer based on presence/absence of non-operational dates
+  # if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
+  #   figureCaption <- 
+  #     htmltools::p(
+  #       htmltools::HTML(
+  #         paste(
+  #           standardText,
+  #           "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 10, 2021, when the ", azmetStation, " station was not in operation.",
+  #           sep = " "
+  #         )
+  #       ),
+  #       
+  #       class = "figure-footer"
+  #     )
+  # } else {
+  #   figureCaption <- 
+  #     htmltools::p(
+  #       htmltools::HTML(standardText), 
+  #       class = "figure-footer"
+  #     )
+  # }
   
   return(figureCaption)
 }

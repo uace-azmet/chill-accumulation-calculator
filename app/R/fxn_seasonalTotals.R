@@ -21,7 +21,9 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
       ) %>% 
       fxn_hourlyChillVarsToDaily(
         inData = .,
-        azmetStation = azmetStation
+        azmetStation = azmetStation,
+        startDate = startDate,
+        endDate = endDate
       )
   } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
     azDaily <- 
