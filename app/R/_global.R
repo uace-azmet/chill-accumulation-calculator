@@ -48,8 +48,8 @@ chillVariables <-
     "Hours below 32 °F",
     "Hours between 32 and 45 °F",
     "Hours below 45 °F", 
-    "Hours above 68 °F",
-    "Utah Model"
+    "Hours above 68 °F"#,
+    # "Utah Model"
   )
 
 

@@ -35,9 +35,6 @@ ui <- htmltools::htmlTemplate(
 
 server <- function(input, output, session) {
   
-  # shinyjs::useShinyjs(html = TRUE)
-  # shinyjs::hideElement("pageBottomText")
-  
   
   # Observables -----
   
@@ -90,10 +87,6 @@ server <- function(input, output, session) {
       shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
     }
   })
-  
-  # shiny::observeEvent(seasonalTotals(), {
-  #   shinyjs::showElement("pageBottomText")
-  # })
   
   
   # Reactives -----
