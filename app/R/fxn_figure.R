@@ -2,6 +2,7 @@
 #' 
 #' @param inData - data table of seasonal chill accumulation values by year
 #' @param azmetStation - user-specified AZMet station
+#' @param chillVariable - Chill variable selected by user
 #' @return `figure` - plotly figure
 
 # https://plotly-r.com/ 
@@ -11,11 +12,22 @@
 # https://www.color-hex.com/color-palette/1041718
 
 
-fxn_figure <- function(inData, azmetStation) {
+fxn_figure <- function(inData, azmetStation, chillVariable) {
   
   # Inputs -----
   
-  averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 0)
+  averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 1)
+  
+  if (chillVariable == "Chill Portions") {
+    axisVarUnits <- "Portions"
+    hoverTextVarUnits <- "portions"
+  } else if (chillVariable == "Utah Model") {
+    axisVarUnits <- "Units"
+    hoverTextVarUnits <- "units"
+  } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
+    axisVarUnits <- "Hours"
+    hoverTextVarUnits <- "hours"
+  }
   
   dataCurrentYear <- inData %>% 
     dplyr::filter(endDateYear == max(endDateYear)) %>%
@@ -47,7 +59,7 @@ fxn_figure <- function(inData, azmetStation) {
         hovertext = ~paste0(
           "<br><b>AZMet Station:</b> ", azmetStation,
           "<br><b>Year:</b> ", dateYearLabel,
-          "<br><b>Accumulation:</b> ", chillTotalLabel, " hours"
+          "<br><b>Accumulation:</b> ", chillTotalLabel, " ", hoverTextVarUnits
         ),
         type = "bar"
       ) %>% 
@@ -64,7 +76,7 @@ fxn_figure <- function(inData, azmetStation) {
         hovertext = ~paste0(
           "<br><b>AZMet Station:</b> ", azmetStation,
           "<br><b>Year:</b> ", dateYearLabel,
-          "<br><b>Accumulation:</b> ", chillTotalLabel, " hours"
+          "<br><b>Accumulation:</b> ", chillTotalLabel, " ", hoverTextVarUnits
         ),
         type = "bar"
       ) %>%
@@ -165,7 +177,7 @@ fxn_figure <- function(inData, azmetStation) {
           title = list(
             font = list(size = 14),
             standoff = 25,
-            text = "hours"
+            text = axisVarUnits
           ),
           zeroline = TRUE,
           zerolinecolor = "#c9c9c9"
@@ -184,7 +196,7 @@ fxn_figure <- function(inData, azmetStation) {
         hovertext = ~paste0(
           "<br><b>AZMet Station:</b> ", azmetStation,
           "<br><b>Year:</b> ", dateYearLabel,
-          "<br><b>Accumulation:</b> ", chillTotalLabel, " hours"
+          "<br><b>Accumulation:</b> ", chillTotalLabel, " ", hoverTextVarUnits
         ),
         type = "bar"
       ) %>% 
@@ -201,7 +213,7 @@ fxn_figure <- function(inData, azmetStation) {
         hovertext = ~paste0(
           "<br><b>AZMet Station:</b> ", azmetStation,
           "<br><b>Year:</b> ", dateYearLabel,
-          "<br><b>Accumulation:</b> ", chillTotalLabel, " hours"
+          "<br><b>Accumulation:</b> ", chillTotalLabel, " ", hoverTextVarUnits
         ),
         type = "bar"
       ) %>%
@@ -236,7 +248,7 @@ fxn_figure <- function(inData, azmetStation) {
               size = 14
             ),
           showarrow = FALSE,
-          text = paste("<b>Average: ", format(abs(round(averageTotal, digits = 0)), nsmall = 0), " hours</b>"),
+          text = paste("<b>Average: ", format(abs(round(averageTotal, digits = 1)), nsmall = 1), hoverTextVarUnits, "</b>"),
           x = 0,
           xanchor = "left",
           xref = "paper",
@@ -302,7 +314,7 @@ fxn_figure <- function(inData, azmetStation) {
           title = list(
             font = list(size = 14),
             standoff = 25,
-            text = "Hours"
+            text = axisVarUnits
           ),
           zeroline = TRUE,
           zerolinecolor = "#c9c9c9"

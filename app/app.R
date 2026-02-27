@@ -35,9 +35,6 @@ ui <- htmltools::htmlTemplate(
 
 server <- function(input, output, session) {
   
-  # shinyjs::useShinyjs(html = TRUE)
-  # shinyjs::hideElement("pageBottomText")
-  
   
   # Observables -----
   
@@ -91,17 +88,14 @@ server <- function(input, output, session) {
     }
   })
   
-  # shiny::observeEvent(seasonalTotals(), {
-  #   shinyjs::showElement("pageBottomText")
-  # })
-  
   
   # Reactives -----
   
   figure <- shiny::eventReactive(seasonalTotals(), {
     fxn_figure(
       inData = seasonalTotals(),
-      azmetStation = input$azmetStation
+      azmetStation = input$azmetStation,
+      chillVariable = input$chillVariable
     )
   })
   
@@ -120,7 +114,8 @@ server <- function(input, output, session) {
       azmetStation = input$azmetStation,
       inData = seasonalTotals(),
       startDate = input$startDate,
-      endDate = input$endDate
+      endDate = input$endDate,
+      chillVariable = input$chillVariable
     )
   })
   
