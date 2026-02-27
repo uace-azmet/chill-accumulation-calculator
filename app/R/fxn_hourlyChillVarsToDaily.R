@@ -45,8 +45,6 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation, startDate, endDate)
     inData <- inData
   }
   
-  
-  
   hourlyChillVarsToDaily <- as.data.frame(inData) %>% 
     dplyr::rename(
       Year = date_year,
@@ -61,6 +59,7 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation, startDate, endDate)
       Day = as.numeric(lubridate::day(date_datetime))
     ) %>% 
     dplyr::select(Year, JDay, Hour, Temp, Month, Day) %>% 
+    na.omit(object = .) %>%  # `chillR` does not handle NAs within next function
     chillR::daily_chill(
       hourtemps = .,
       running_mean = 0,
