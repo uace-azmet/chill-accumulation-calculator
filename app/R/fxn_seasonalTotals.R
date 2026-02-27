@@ -12,13 +12,52 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
   azmetStationStartDate <- 
     dplyr::filter(azmetStationMetadata, meta_station_name == azmetStation)$start_date
   
+  
+  # Data download --
+  
+  startDateDownload <- startDate
+  endDateDownload <- endDate
+  
+  while (startDateDownload >= azmetStationStartDate) {
+    if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+      azHourly <-  
+        fxn_azHourly(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+      azDaily <- 
+        fxn_azDaily(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
+    }
+    
+    if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+      if (exists("azHourlySeasons") == FALSE) {
+        azHourlySeasons <- azHourly
+      } else {
+        azHourlySeasons <- rbind(azHourlySeasons, azHourly)
+      }
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+      if (exists("azDailySeasons") == FALSE) {
+        azDailySeasons <- azDaily
+      } else {
+        azDailySeasons <- rbind(azDailySeasons, azDaily)
+      }
+    }
+    
+    startDateDownload <- min(seq(lubridate::date(startDateDownload), length = 2, by = "-1 year"))
+    endDateDownload <- min(seq(lubridate::date(endDateDownload), length = 2, by = "-1 year"))
+  }
+  
+  
+  # Data transform --
+  
   if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-    azDaily <-  
-      fxn_azHourly(
-        azmetStation = azmetStation,
-        startDate = azmetStationStartDate, # To call API only once
-        endDate = endDate
-      ) %>% 
+    azDailySeasons <- azHourlySeasons %>% 
       fxn_hourlyChillVarsToDaily(
         inData = .,
         azmetStation = azmetStation,
@@ -26,21 +65,19 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
         endDate = endDate
       )
   } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
-    azDaily <- 
-      fxn_azDaily(
-        azmetStation = azmetStation,
-        startDate = azmetStationStartDate, # To call API only once
-        endDate = endDate
-      ) |>
+    azDailySeasons <- azDailySeasons %>% 
       dplyr::mutate(
         chill_hours_3245F = chill_hours_45F - chill_hours_32F
       )
   }
   
+  
+  # Seasonal totals --
+  
   while (startDate >= azmetStationStartDate) {
     seasonalData <- 
       dplyr::filter(
-        azDaily,
+        azDailySeasons,
         datetime >= startDate & datetime <= endDate
       )
     

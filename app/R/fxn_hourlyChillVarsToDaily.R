@@ -2,48 +2,48 @@
 #' 
 #' @param inData - returned output from `fxn_hourlyData.R`
 #' @param azmetStation - user-specified AZMet station
-#' @param startDate - Start date of period of interest
-#' @param endDate - End date of period of interest
+#' @param startDate - Start date of period of interest ???
+#' @param endDate - End date of period of interest ???
 #' @return `hourlyChillVarsToDaily` - Tibble of daily values for chill variables dependent on hourly data
 
 
 fxn_hourlyChillVarsToDaily <- function(inData, azmetStation, startDate, endDate) {
   
-  azmetStationStartDate <- 
-    dplyr::filter(
-      azmetStationMetadata, 
-      meta_station_name == azmetStation
-    )$start_date
+  # azmetStationStartDate <- 
+  #   dplyr::filter(
+  #     azmetStationMetadata, 
+  #     meta_station_name == azmetStation
+  #   )$start_date
   
   # Account for multi-month absence of YUG data in 2021
-  nonOperational <- 0
-  
-  if (azmetStation == "Yuma N.Gila") {
-    nodataDateRange <-
-      lubridate::interval(
-        start = lubridate::date("2021-06-16"),
-        end = lubridate::date("2021-10-21")
-      )
-    
-    while (startDate >= azmetStationStartDate) {
-      userDateRange <- lubridate::interval(start = startDate, end = endDate)
-      
-      if (lubridate::int_overlaps(int1 = nodataDateRange, int2 = userDateRange) == TRUE) {
-        nonOperational <- 1
-      }
-      
-      startDate <- min(seq(startDate, length = 2, by = "-1 year"))
-      endDate <- min(seq(endDate, length = 2, by = "-1 year"))
-    }
-  }
-  
-  # Generate figure footer based on presence/absence of non-operational dates
-  if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
-    inData <- inData %>% 
-      dplyr::filter(date_year != 2021)
-  } else {
-    inData <- inData
-  }
+  # nonOperational <- 0
+  # 
+  # if (azmetStation == "Yuma N.Gila") {
+  #   nodataDateRange <-
+  #     lubridate::interval(
+  #       start = lubridate::date("2021-06-16"),
+  #       end = lubridate::date("2021-10-21")
+  #     )
+  #   
+  #   while (startDate >= azmetStationStartDate) {
+  #     userDateRange <- lubridate::interval(start = startDate, end = endDate)
+  #     
+  #     if (lubridate::int_overlaps(int1 = nodataDateRange, int2 = userDateRange) == TRUE) {
+  #       nonOperational <- 1
+  #     }
+  #     
+  #     startDate <- min(seq(startDate, length = 2, by = "-1 year"))
+  #     endDate <- min(seq(endDate, length = 2, by = "-1 year"))
+  #   }
+  # }
+  # 
+  # # Generate figure footer based on presence/absence of non-operational dates
+  # if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
+  #   inData <- inData %>% 
+  #     dplyr::filter(date_year != 2021)
+  # } else {
+  #   inData <- inData
+  # }
   
   hourlyChillVarsToDaily <- as.data.frame(inData) %>% 
     dplyr::rename(
