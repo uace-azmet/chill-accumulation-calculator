@@ -73,7 +73,7 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
     captionText <- 
       paste(
         captionText,
-        "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 10, 2021, when the ", azmetStation, " station was not in operation.",
+        "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 21, 2021, when the ", azmetStation, " station was not in operation.",
         sep = " "
       )
   } else {
@@ -103,31 +103,8 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
   figureCaption <- 
     htmltools::p(
       htmltools::HTML(captionText), 
-      class = "figure-footer" # "figure-caption" class mixes with UA CSS
+      class = "figure-caption" # "figure-caption" class mixes with UA CSS
     )
-  
-  
-  # Generate figure footer based on presence/absence of non-operational dates
-  # if (azmetStation == "Yuma N.Gila" & nonOperational == 1) {
-  #   figureCaption <- 
-  #     htmltools::p(
-  #       htmltools::HTML(
-  #         paste(
-  #           standardText,
-  #           "However, we do not show chill accumulation for the year with a month-day period that overlaps the period from June 16, 2021 through October 10, 2021, when the ", azmetStation, " station was not in operation.",
-  #           sep = " "
-  #         )
-  #       ),
-  #       
-  #       class = "figure-footer"
-  #     )
-  # } else {
-  #   figureCaption <- 
-  #     htmltools::p(
-  #       htmltools::HTML(standardText), 
-  #       class = "figure-footer"
-  #     )
-  # }
   
   return(figureCaption)
 }
