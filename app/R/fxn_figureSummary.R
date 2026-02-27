@@ -96,7 +96,6 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
       }
     }
     
-    
     if (chillVariable %in% c("Chill Portions", "Utah Model")) {
       figureSummary <- 
         htmltools::p(
