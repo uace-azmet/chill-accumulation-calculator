@@ -41,7 +41,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
   } else {
     if (chillVariable == "Chill Portions") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_portions_total = sum(chill_portions, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_portions_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 1), nsmall = 1)) %>%
@@ -49,7 +49,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours below 32 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_32F_total = sum(chill_hours_32F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_32F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -57,7 +57,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours below 45 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_45F_total = sum(chill_hours_45F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_45F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -65,7 +65,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours between 32 and 45 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_3245F_total = sum(chill_hours_3245F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_3245F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -73,7 +73,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours above 68 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_68F_total = sum(chill_hours_68F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_68F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -81,7 +81,7 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Utah Model") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
+        # dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(utah_model_total = sum(utah_model, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = utah_model_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 1), nsmall = 1)) %>%
@@ -92,3 +92,72 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
   
   return(chillTotal)
 }
+
+
+
+my_tibble <- 
+  tibble::tibble(
+    utah_model = c(-3, -2, -1, 0, -1, -2, -3, 0, 1, 2, 1, 0, -1, -2, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6)
+  )
+
+ind_UtahModelStart <- purrr::detect_index(my_tibble$utah_model, ~ . > 0)
+
+my_tibble <- my_tibble %>% 
+  dplyr::mutate(
+    row_number = dplyr::row_number(),
+    utah_model_transform1 = dplyr::if_else(
+      row_number < ind_UtahModelStart,
+      0,
+      utah_model
+    )
+  ) %>% 
+  dplyr::rowwise(
+    dplyr::mutate(
+      utah_model_transform2 = dplyr::if_else(
+        dplyr::row_number() == 1,
+        utah_model_transform1,
+        dplyr::if_else(
+          sum(c(1,2,3,4))
+        )
+      )
+    )
+  )
+
+
+
+
+# utah_model_transform2 = dplyr::rowwise(
+#   dplyr::if_else(
+#     sum(utah_model_transform1) > 0,
+#     sum(utah_model_transform1),
+#     -9999.0
+#   )
+# )
+# utah_model_transform2 = dplyr::rowwise(
+#   dplyr::if_else(
+#     utah_model_transform1 <= 0,
+#     0,
+#     cumsum(utah_model_transform1)
+#   ) 
+# )
+
+
+# dplyr::rowwise(
+#   
+# )
+# dplyr::mutate(
+#   row_number = dplyr::row_number(),
+#   utah_model_transform1 = dplyr::if_else(
+#     row_number < ind_UtahModelStart,
+#     0,
+#     utah_model
+#   ),
+#   utah_model_transform2 = cumsum(utah_model_transform1),
+#   utah_model_transform3 = dplyr::if_else(
+#     utah_model_transform2 < 0,
+#     0,
+#     utah_model_transform2
+#   ),
+# utah_model_total = cumsum(utah_model_transform3) # wrong
+
+

@@ -25,27 +25,16 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
     chillR::daily_chill(
       hourtemps = .,
       running_mean = 0,
-      models = list(Chill_Portions = Dynamic_Model),
+      models = list(Chill_Portions = Dynamic_Model, Utah_Chill_Units = Utah_Model),
       THourly = NULL
-    ) %>% 
-    # chillR::daily_chill(
-    #   hourtemps = .,
-    #   running_mean = 0,
-    #   models = list(Chill_Portions = Dynamic_Model, Utah_Chill_Units = Utah_Model),
-    #   THourly = NULL
-    # ) %>% 
+    ) %>%
     magrittr::extract2("daily_chill") %>% 
     tibble::as_tibble() %>% 
     dplyr::rename(
       date_year = Year,
-      chill_portions = Chill_Portions#,
-      # utah_model = Utah_Chill_Units
+      chill_portions = Chill_Portions,
+      utah_model = Utah_Chill_Units
     ) %>%
-    # dplyr::rename(
-    #   date_year = Year,
-    #   chill_portions = Chill_Portions,
-    #   utah_model = Utah_Chill_Units
-    # ) %>%
     dplyr::mutate(
       datetime = as.Date(as.character(YYMMDD), "%Y%m%d"),
       date_year = lapply(date_year, as.character),

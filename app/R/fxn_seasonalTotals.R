@@ -56,6 +56,7 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
   
   # Data transform --
   
+  # New variables
   if (chillVariable %in% c("Chill Portions", "Utah Model")) {
     azDailySeasons <- azHourlySeasons %>% 
       fxn_hourlyChillVarsToDaily(
@@ -64,10 +65,11 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
       )
   } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::mutate(
-        chill_hours_3245F = chill_hours_45F - chill_hours_32F
-      )
+      dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
   }
+  
+  # Adjust "Utah Model", negative values to zero until after first seasonal positive value
+  
   
   
   # Seasonal totals --

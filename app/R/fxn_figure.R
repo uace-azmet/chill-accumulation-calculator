@@ -248,7 +248,7 @@ fxn_figure <- function(inData, azmetStation, chillVariable) {
               size = 14
             ),
           showarrow = FALSE,
-          text = paste("<b>Average: ", format(abs(round(averageTotal, digits = 1)), nsmall = 1), hoverTextVarUnits, "</b>"),
+          text = paste("<b>Average: ", format(round(averageTotal, digits = 1), nsmall = 1), hoverTextVarUnits, "</b>"),
           x = 0,
           xanchor = "left",
           xref = "paper",
