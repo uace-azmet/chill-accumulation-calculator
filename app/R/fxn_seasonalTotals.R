@@ -68,10 +68,7 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
       dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
   }
   
-  # Adjust "Utah Model", negative values to zero until after first seasonal positive value
-  
-  
-  
+   
   # Seasonal totals --
   
   while (startDate >= azmetStationStartDate) {
