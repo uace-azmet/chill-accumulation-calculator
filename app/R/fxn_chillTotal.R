@@ -41,7 +41,6 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
   } else {
     if (chillVariable == "Chill Portions") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_portions_total = sum(chill_portions, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_portions_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 1), nsmall = 1)) %>%
@@ -49,7 +48,6 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours below 32 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_32F_total = sum(chill_hours_32F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_32F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -57,7 +55,6 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours below 45 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_45F_total = sum(chill_hours_45F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_45F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -65,7 +62,6 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours between 32 and 45 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_3245F_total = sum(chill_hours_3245F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_3245F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
@@ -73,16 +69,34 @@ fxn_chillTotal <- function(inData, azmetStation, startDate, endDate, chillVariab
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Hours above 68 °F") {
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
         dplyr::summarize(chill_hours_68F_total = sum(chill_hours_68F, na.rm = TRUE)) %>%
         dplyr::rename(chillTotal = chill_hours_68F_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 0), nsmall = 0)) %>%
         dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
         dplyr::mutate(dateYearLabel = dateYearLabel)
     } else if (chillVariable == "Utah Model") {
+      inData <- inData %>% 
+        dplyr::mutate(utah_model_accum = NA_real_)
+      
+      for (i in 1:length(inData$utah_model)) {
+        if (i == 1) {
+          if (inData$utah_model[i] < 0) {
+            inData$utah_model_accum[i] <- 0
+          } else {
+            inData$utah_model_accum[i] <- inData$utah_model[i]
+          }
+        } else {
+          if (inData$utah_model[i] + inData$utah_model_accum[i - 1] < 0) {
+            inData$utah_model_accum[i] <- 0
+          } else {
+            inData$utah_model_accum[i] <- inData$utah_model[i] + inData$utah_model_accum[i - 1]
+          }
+        }
+      }
+      rm(i)
+      
       chillTotal <- inData %>%
-        dplyr::group_by(meta_station_name) %>%
-        dplyr::summarize(utah_model_total = sum(utah_model, na.rm = TRUE)) %>%
+        dplyr::summarize(utah_model_total = dplyr::last(utah_model_accum, na_rm = TRUE)) %>%
         dplyr::rename(chillTotal = utah_model_total) %>%
         dplyr::mutate(chillTotalLabel = format(round(chillTotal, digits = 1), nsmall = 1)) %>%
         dplyr::mutate(endDateYear = lubridate::year(endDate)) %>%
