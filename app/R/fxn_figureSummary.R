@@ -1,7 +1,7 @@
 #' `fxn_figureSummary.R` - Build summary of figure based on user input
 #' 
 #' @param azmetStation - AZMet station selection by user
-#' @param inData - data table of seasonal chill accumulation by year
+#' @param inData - Data table of seasonal chill accumulation by year
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
 #' @param chillVariable - Chill variable selected by user

@@ -3,7 +3,7 @@
 #' @param azmetStation - AZMet station name
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
-#' @return `azDaily` - Table of downloaded, transformed daily data
+#' @return `azDaily` - Table of downloaded daily data
 
 
 fxn_azDaily <- function(azmetStation, startDate, endDate) {
@@ -15,9 +15,9 @@ fxn_azDaily <- function(azmetStation, startDate, endDate) {
   ) %>% 
     dplyr::select(
       dplyr::all_of(
-        c(dailyVarsID, dailyVarsMeasured, dailyVarsDerived)
+        c(dailyVarsID, dailyVarsMeasured, dailyVarsDerived) # Defined in `_global.R`
       )
-    ) # Defined in `_global.R`
+    )
   
   return(azDaily)
 }

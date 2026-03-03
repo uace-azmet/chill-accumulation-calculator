@@ -26,7 +26,7 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
           startDate = startDateDownload, # To call API by individual season
           endDate = endDateDownload
         )
-    } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
       azDaily <- 
         fxn_azDaily(
           azmetStation = azmetStation,
@@ -41,7 +41,7 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
       } else {
         azHourlySeasons <- rbind(azHourlySeasons, azHourly)
       }
-    } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
       if (exists("azDailySeasons") == FALSE) {
         azDailySeasons <- azDaily
       } else {
@@ -63,9 +63,11 @@ fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) 
         inData = .,
         azmetStation = azmetStation
       )
-  } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
-    azDailySeasons <- azDailySeasons %>% 
+  } else if (chillVariable == "Hours between 32 and 45 °F") {
+    azDailySeasons <- azDailySeasons %>%
       dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
+  } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+    azDailySeasons <- azDailySeasons
   }
   
    

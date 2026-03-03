@@ -1,7 +1,7 @@
 #' `fxn_figureCaption.R` - Build caption for figure based on user input
 #' 
 #' @param azmetStation AZMet station selection by user
-#' @param inData - data table of seasonal chill accumulation by year
+#' @param inData - Data table of seasonal chill accumulation by year
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
 #' @param chillVariable - Chill variable selected by user
@@ -33,16 +33,12 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
   if (nrow(inData) == 1) {
     captionText <- 
       paste0(
-        "Chill accumulation for the current year (black bar in graph) is based on the sum of daily values of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", 
-        gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")),
-        "."
+        "Chill accumulation for the current year (black bar in graph) is based on the sum of daily values of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")), "."
       )
   } else {
     captionText <- 
       paste0(
-        "Chill accumulation for the current year (black bar in graph) is based on the sum of daily values of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Accumulations for past years (gray bars in graph) are based on the same start and end month and day, but during those respective years. Average chill accumulation is calculated from values of all individual years shown above. Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", 
-        gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")),
-        "."
+        "Chill accumulation for the current year (black bar in graph) is based on the sum of daily values of ", chillVariableText, " from ", gsub(" 0", " ", format(startDate, "%B %d, %Y")), " through ", gsub(" 0", " ", format(endDate, "%B %d, %Y")), ". Accumulations for past years (gray bars in graph) are based on the same start and end month and day, but during those respective years. Average chill accumulation is calculated from values of all individual years shown above. Temperature data for the ", azmetStation, " station in the new AZMet database currently go back to ", gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")), "."
       )
   }
   
@@ -85,18 +81,14 @@ fxn_figureCaption <- function(azmetStation, inData, startDate, endDate, chillVar
     captionText <- 
       paste(
         captionText,
-        "Chill portions are based on calculations in the",
-        htmltools::tags$span(style = "font-family: monospace; font-size: 0.75rem", "'chillR'"),
-        "R package.",
+        "Chill portions are based on calculations in the", htmltools::tags$code("chillR", style = "color: #606060;"), "R package.",
         sep = " "
       )
   } else if (chillVariable == "Utah Model") {
     captionText <- 
       paste(
         captionText,
-        "Utah Model chill units are based on calculations in the",
-        htmltools::tags$span(style = "font-family: monospace; font-size: 0.75rem", "'chillR'"),
-        "R package. Accumulation values reset daily to 0.0 when negative.",
+        "Utah Model chill units are based on calculations in the", htmltools::tags$code("chillR", style = "color: #606060;"), "R package. Accumulation values reset daily to 0.0 when negative.",
         sep = " "
       )
   } else {

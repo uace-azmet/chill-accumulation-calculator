@@ -3,7 +3,7 @@
 #' @param azmetStation - AZMet station name
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
-#' @return `azHourly` - Table of downloaded, transformed hourly data
+#' @return `azHourly` - Table of downloaded hourly data
 
 
 fxn_azHourly <- function(azmetStation, startDate, endDate) {
@@ -18,9 +18,9 @@ fxn_azHourly <- function(azmetStation, startDate, endDate) {
   ) %>% 
     dplyr::select(
       dplyr::all_of(
-        c(hourlyVarsID, hourlyVarsMeasured, hourlyVarsDerived)
+        c(hourlyVarsID, hourlyVarsMeasured, hourlyVarsDerived) # Defined in `_global.R`
       )
-    ) # Defined in `_global.R`
+    )
   
   return(azHourly)
 }
