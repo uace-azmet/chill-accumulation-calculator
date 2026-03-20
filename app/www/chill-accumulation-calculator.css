@@ -14,6 +14,11 @@
     content: attr(data-title);
 }
 
+.bolder-icon {
+  stroke-width: 0.5;
+  stroke: currentColor; /* Inherits the 'color' property of the parent */
+}
+
 .bslib-sidebar-resize-handle {
   display: none;
 }
