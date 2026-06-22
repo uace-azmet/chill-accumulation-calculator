@@ -10,6 +10,8 @@ library(htmltools)
 library(lubridate)
 library(plotly)
 library(shiny)
+library(shinyjs)
+library(vroom)
 
 
 # Files --------------------
@@ -20,6 +22,8 @@ library(shiny)
 
 # Scripts. Loaded automatically at app start if in `R` folder
 #source("./R/scr_scriptName.R", local = TRUE)
+
+shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
 
 
 # Variables --------------------
@@ -36,11 +40,7 @@ azmetStationMetadata <- azmetr::station_info |>
   ) |>
   dplyr::filter(!meta_station_name %in% c("Test"))
 
-activeStations <-
-  dplyr::filter(
-    azmetStationMetadata,
-    status == "active"
-  )
+activeStations <- dplyr::filter(azmetStationMetadata, status == "active")
 
 chillVariables <- 
   c(
@@ -51,6 +51,29 @@ chillVariables <-
     "Hours above 68 °F",
     "Utah Model"
   )
+
+initialStation <- activeStations |>
+  dplyr::arrange(meta_station_name) |>
+  dplyr::pull(meta_station_name) |>
+  dplyr::first()
+
+if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
+  initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
+} else {
+  initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
+}
+
+# initialStationStartDate <- dplyr::filter(activeStations, meta_station_name == initialStation)$start_date
+# 
+# if (initialStationStartDate > Sys.Date() - lubridate::years(1)) {
+#   initialStartDateMinimum <- initialStationStartDate
+# } else {
+#   initialStartDateMinimum <- Sys.Date() - lubridate::years(1)
+# }
+
+initialDateMinimum <- 
+  dplyr::filter(activeStations, meta_station_name == initialStation) |>
+  dplyr::pull(start_date)
 
 
 # Daily Data --
@@ -205,23 +228,3 @@ hourlyVarsMeasured <-
     # "wind_vector_dir_stand_dev", 
     # "wind_vector_magnitude"
   )
-
-if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
-  initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
-} else {
-  initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
-}
-
-initialStation <-
-  dplyr::filter(
-    activeStations,
-    meta_station_name == azmetStationMetadata[order(azmetStationMetadata$meta_station_name), ]$meta_station_name[1]
-  )$meta_station_name
-
-initialStationStartDate <- dplyr::filter(activeStations, meta_station_name == initialStation)$start_date
-
-if (initialStationStartDate > Sys.Date() - lubridate::years(1)) {
-  initialStartDateMinimum <- initialStationStartDate
-} else {
-  initialStartDateMinimum <- Sys.Date() - lubridate::years(1)
-}
