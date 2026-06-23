@@ -64,14 +64,13 @@ server <-
       stationStartDateMinimum <- stationStartDate
       stationEndDateMinimum <- stationStartDate
       
-      # ?????
-      if (stationStartDate > Sys.Date() - lubridate::years(1)) {
-        stationStartDateMinimum <- stationStartDate
-        stationEndDateMinimum <- stationStartDate
-      } else {
-        stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
-        stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
-      }
+      # if (stationStartDate > Sys.Date() - lubridate::years(1)) {
+      #   stationStartDateMinimum <- stationStartDate
+      #   stationEndDateMinimum <- stationStartDate
+      # } else {
+      #   stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
+      #   stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
+      # }
   
       if (stationStartDate > input$startDate) {
         stationStartDateSelected <- stationStartDate
@@ -275,8 +274,8 @@ server <-
     #   shiny::renderUI({
     #     navsetCardTimeSeriesCaption()
     #   })
-    # 
-    # output$pageBottomText <- 
+
+    # output$pageBottomText <-
     #   shiny::renderUI({
     #     shiny::req(showPageBottomText())
     #     pageBottomText()

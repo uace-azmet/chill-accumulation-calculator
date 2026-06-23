@@ -20,7 +20,7 @@ sidebar <-
       htmltools::HTML("&nbsp;<strong>DATA OPTIONS</strong>&nbsp;"),
       bslib::tooltip(
         bsicons::bs_icon("info-circle"),
-        "Select an AZMet station, chill variable, and dates for the start and end of the period of interest. Then, click or tap 'CALCULATE TOTAL'.",
+        "Select an AZMet station, chill variable, and dates for the start and end of the season of interest. Then, click or tap 'CALCULATE TOTAL'.",
         id = "infoDataOptions",
         placement = "right"
       ),
@@ -46,7 +46,7 @@ sidebar <-
       inputId = "startDate",
       label = "Start Date",
       value = initialStartDate,
-      min = initialDateMinimum,
+      min = initialStartDateMinimum,
       max = Sys.Date() - 1,
       format = "MM d, yyyy",
       startview = "month",
@@ -59,7 +59,7 @@ sidebar <-
       inputId = "endDate",
       label = "End Date",
       value = Sys.Date() - 1,
-      min = initialDateMinimum,
+      min = initialStartDateMinimum,
       max = Sys.Date() - 1,
       format = "MM d, yyyy",
       startview = "month",

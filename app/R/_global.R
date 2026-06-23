@@ -29,6 +29,8 @@ shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
 # Variables --------------------
 
 
+# AZMet Stations -----
+
 azmetStationMetadata <- azmetr::station_info |>
   dplyr::mutate(end_date = NA) |> # Placeholder until inactive stations are in API and `azmetr`
   dplyr::mutate(
@@ -42,16 +44,6 @@ azmetStationMetadata <- azmetr::station_info |>
 
 activeStations <- dplyr::filter(azmetStationMetadata, status == "active")
 
-chillVariables <- 
-  c(
-    "Chill Portions",
-    "Hours below 32 °F",
-    "Hours between 32 and 45 °F",
-    "Hours below 45 °F", 
-    "Hours above 68 °F",
-    "Utah Model"
-  )
-
 initialStation <- activeStations |>
   dplyr::arrange(meta_station_name) |>
   dplyr::pull(meta_station_name) |>
@@ -63,20 +55,16 @@ if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
   initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
 }
 
-# initialStationStartDate <- dplyr::filter(activeStations, meta_station_name == initialStation)$start_date
-# 
-# if (initialStationStartDate > Sys.Date() - lubridate::years(1)) {
-#   initialStartDateMinimum <- initialStationStartDate
-# } else {
-#   initialStartDateMinimum <- Sys.Date() - lubridate::years(1)
-# }
-
-initialDateMinimum <- 
+initialStartDateMinimum <- 
   dplyr::filter(activeStations, meta_station_name == initialStation) |>
   dplyr::pull(start_date)
 
+yugNodataStartDate <- lubridate::date("2021-06-16")
+yugNodataEndDate <- lubridate::date("2021-10-21")
+yugNodataInterval <- lubridate::interval(yugNodataStartDate, yugNodataEndDate)
 
-# Daily Data --
+
+# Daily Data -----
 
 # Derived (after data retrieved from station) variables
 dailyVarsDerived <- 
@@ -170,7 +158,7 @@ dailyVarsMeasured <-
   )
 
 
-# Hourly Data --
+# Hourly Data -----
 
 # Derived (after data retrievd from station) variables
 hourlyVarsDerived <- 
@@ -228,3 +216,21 @@ hourlyVarsMeasured <-
     # "wind_vector_dir_stand_dev", 
     # "wind_vector_magnitude"
   )
+
+
+# Other -----
+
+chillVariables <- 
+  c(
+    "Chill Portions",
+    "Hours below 32 °F",
+    "Hours between 32 and 45 °F",
+    "Hours below 45 °F", 
+    "Hours above 68 °F",
+    "Utah Model"
+  )
+
+navsetCardTabTitleIcon <- shiny::reactiveVal(value = "bar-chart-fill")
+
+showNavsetCardTab <- reactiveVal(FALSE)
+showPageBottomText <- reactiveVal(FALSE)
