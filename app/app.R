@@ -170,47 +170,49 @@ server <-
     #   fxn_pageBottomText()
     # })
 
-    # seasonalTotals <- 
-    #   shiny::eventReactive(input$calculateTotal, {
-    #     # Catch input errors before data download, show error modal
-    #     shiny::validate(
-    #       shiny::need(
-    #         expr = input$startDate <= input$endDate,
-    #         message = FALSE # Failing validation test
-    #       ),
-    #       shiny::need(
-    #         expr = 
-    #           !(input$azmetStation == "Yuma N.Gila" &
-    #               lubridate::int_overlaps(
-    #                 int1 = yugNodataInterval, 
-    #                 int2 = lubridate::interval(input$startDate, input$endDate)
-    #               )
-    #           ),
-    #         message = FALSE # Failing validation test
-    #       )
-    #     )
-    # 
-    #     idCalculateTotal <- shiny::showNotification(
-    #       ui = "Calculating chill accumulation . . .",
-    #       action = NULL,
-    #       duration = NULL,
-    #       closeButton = FALSE,
-    #       id = "idCalculateTotal",
-    #       type = "message"
-    #     )
-    # 
-    #     on.exit(
-    #       shiny::removeNotification(id = idCalculateTotal),
-    #       add = TRUE
-    #     )
-    # 
-    #     fxn_seasonalTotals(
-    #       azmetStation = input$azmetStation,
-    #       startDate = input$startDate,
-    #       endDate = input$endDate,
-    #       chillVariable = input$chillVariable
-    #     )
-    #   })
+    seasonalTotals <-
+      shiny::eventReactive(input$calculateTotal, {
+        
+        # Catch input errors before data download
+        shiny::validate(
+          shiny::need(
+            expr = input$startDate <= input$endDate,
+            message = FALSE # Failing validation test
+          ),
+          
+          shiny::need(
+            expr =
+              !(input$azmetStation == "Yuma N.Gila" &
+                  lubridate::int_overlaps(
+                    int1 = yugNodataInterval,
+                    int2 = lubridate::interval(input$startDate, input$endDate)
+                  )
+              ),
+            message = FALSE # Failing validation test
+          )
+        )
+
+        idCalculateTotal <- shiny::showNotification(
+          ui = "Calculating chill accumulation . . .",
+          action = NULL,
+          duration = NULL,
+          closeButton = FALSE,
+          id = "idCalculateTotal",
+          type = "message"
+        )
+
+        on.exit(
+          shiny::removeNotification(id = idCalculateTotal),
+          add = TRUE
+        )
+        
+        fxn_seasonalTotals(
+          azmetStation = input$azmetStation,
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
   
   
   # Outputs -----
