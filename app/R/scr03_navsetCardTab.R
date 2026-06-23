@@ -14,28 +14,28 @@ navsetCardTab <-
       title = "Bar Chart",
       value = "barChart",
       
-      plotly::plotlyOutput(outputId = "navsetCardBarChart"),
-      shiny::htmlOutput(outputId = "navsetCardBarChartCaption")
+      # plotly::plotlyOutput(outputId = "navsetCardBarChart"),
+      # shiny::htmlOutput(outputId = "navsetCardBarChartCaption")
     ),
     
     bslib::nav_panel(
       title = "Table",
       value = "table",
       
-      reactable::reactableOutput(outputId = "navsetCardTable", height = "100%"),
-      shiny::htmlOutput(outputId = "navsetCardTableCaption")
+      # reactable::reactableOutput(outputId = "navsetCardTable", height = "100%"),
+      # shiny::htmlOutput(outputId = "navsetCardTableCaption")
     ),
     
     bslib::nav_panel(
       title = "Time Series",
       value = "timeSeries",
       
-      plotly::plotlyOutput(outputId = "navsetCardTimeSeries"),
-      shiny::htmlOutput(outputId = "navsetCardTimeSeriesCaption")
+      # plotly::plotlyOutput(outputId = "navsetCardTimeSeries"),
+      # shiny::htmlOutput(outputId = "navsetCardTimeSeriesCaption")
     ),
     
     bslib::nav_item(
-      shiny::uiOutput(outputId = "navsetCardTabTooltip")
+      shiny::uiOutput(outputId = "navsetCardTabTooltipText")
     )
   ) |>
   htmltools::tagAppendAttributes(

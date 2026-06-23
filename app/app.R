@@ -15,22 +15,18 @@ ui <- htmltools::htmlTemplate(
       
       bslib::layout_sidebar(
         sidebar = sidebar, # `scr##_sidebar.R`
-        # shiny::htmlOutput(outputId = "navsetCardTabTitle"),
-        # shiny::htmlOutput(outputId = "navsetCardTabSummary"),
-        # shiny::uiOutput(outputId = "navsetCardTab")
         
-        # shiny::htmlOutput(outputId = "figureTitle"),
-        # shiny::htmlOutput(outputId = "figureSummary"),
-        # plotly::plotlyOutput(outputId = "figure"),
-        # shiny::htmlOutput(outputId = "figureCaption")
+        shiny::htmlOutput(outputId = "navsetCardTabTitle"),
+        # shiny::htmlOutput(outputId = "navsetCardTabSummary"),
+        shiny::uiOutput(outputId = "navsetCardTab")
       ) |>
         htmltools::tagAppendAttributes(
           #https://getbootstrap.com/docs/5.0/utilities/api/
           class = "border-0 rounded-0 shadow-none"
-        ),
+        )#,
       
       # shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
-      shiny::htmlOutput(outputId = "pageBottomText")
+      # shiny::htmlOutput(outputId = "pageBottomText")
     )
   )
 
@@ -43,17 +39,17 @@ server <-
     
     shinyjs::useShinyjs(html = TRUE)
     # shinyjs::hideElement(id = "downloadButtonsDiv")
-    # shinyjs::hideElement(id = "navsetCardTab")
+    shinyjs::hideElement(id = "navsetCardTab")
     
     
     # Observables -----
     
-    # shiny::observeEvent(chillTotal(), {
+    shiny::observeEvent(seasonalTotals(), {
       # shinyjs::showElement(id = "downloadButtonsDiv")
-      # shinyjs::showElement(id = "navsetCardTab")
-      # showNavsetCardTab(TRUE)
+      shinyjs::showElement(id = "navsetCardTab")
+      showNavsetCardTab(TRUE)
       # showPageBottomText(TRUE)
-    # })
+    })
     
     # To update available dates based on selected station
     shiny::observeEvent(input$azmetStation, {
@@ -119,67 +115,55 @@ server <-
     })
     
     # To update icon in navsetCardTab title
-    # shiny::observeEvent(input$navsetCardTab, {
-    #   if (input$navsetCardTab == "barChart") {
-    #     navsetCardTabTitleIcon("bar-chart-fill")
-    #   } else if (input$navsetCardTab == "table") {
-    #     navsetCardTabTitleIcon("table")
-    #   } else if (input$navsetCardTab == "timeSeries") {
-    #     navsetCardTabTitleIcon("graph-up")
-    #   }
-    # })
+    shiny::observeEvent(input$navsetCardTab, {
+      if (input$navsetCardTab == "barChart") {
+        navsetCardTabTitleIcon("bar-chart-fill")
+      } else if (input$navsetCardTab == "table") {
+        navsetCardTabTitleIcon("table")
+      } else if (input$navsetCardTab == "timeSeries") {
+        navsetCardTabTitleIcon("graph-up")
+      }
+    })
     
     
     # Reactives -----
     
-    # figure <- shiny::eventReactive(seasonalTotals(), {
-    #   fxn_figure(
-    #     inData = seasonalTotals(),
-    #     azmetStation = input$azmetStation,
-    #     chillVariable = input$chillVariable
-    #   )
-    # })
-    # 
-    # figureCaption <- shiny::eventReactive(seasonalTotals(), {
-    #   fxn_figureCaption(
-    #     azmetStation = input$azmetStation,
-    #     inData = seasonalTotals(),
-    #     startDate = input$startDate,
-    #     endDate = input$endDate,
-    #     chillVariable = input$chillVariable
-    #   )
-    # })
-    # 
-    # figureSummary <- shiny::eventReactive(seasonalTotals(), {
-    #   fxn_figureSummary(
-    #     azmetStation = input$azmetStation,
-    #     inData = seasonalTotals(),
-    #     startDate = input$startDate,
-    #     endDate = input$endDate,
-    #     chillVariable = input$chillVariable
-    #   )
-    # })
-    # 
-    # figureTitle <- shiny::eventReactive(seasonalTotals(), {
-    #   fxn_figureTitle(
-    #     azmetStation = input$azmetStation
-    #   )
-    # })
-    # 
+    # navsetCardTabSummary <-
+    #   shiny::eventReactive(totalEvapotranspiration(), {
+    #     fxn_navsetCardTabSummary(
+    #       azmetStation = input$azmetStation,
+    #       inData = totalEvapotranspiration()[[2]],
+    #       startDate = input$startDate,
+    #       endDate = input$endDate
+    #     )
+    #   })
+    
+    navsetCardTabTitle <-
+      shiny::eventReactive(list(navsetCardTabTitleIcon(), seasonalTotals()), {
+        fxn_navsetCardTabTitle(
+          azmetStation = input$azmetStation,
+          navsetCardTabTitleIcon = navsetCardTabTitleIcon()
+        )
+      })
+    
+    navsetCardTabTooltipText <- 
+      shiny::eventReactive(input$navsetCardTab, {
+        fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
+      })
+    
     # pageBottomText <- shiny::eventReactive(seasonalTotals(), {
     #   fxn_pageBottomText()
     # })
-
+    
     seasonalTotals <-
-      shiny::eventReactive(input$calculateTotal, {
-        
+      eventReactive(input$calculateTotal, {
         # Catch input errors before data download
         shiny::validate(
           shiny::need(
             expr = input$startDate <= input$endDate,
             message = FALSE # Failing validation test
           ),
-          
+
           shiny::need(
             expr =
               !(input$azmetStation == "Yuma N.Gila" &
@@ -213,9 +197,9 @@ server <-
           chillVariable = input$chillVariable
         )
       })
-  
-  
-  # Outputs -----
+    
+    
+    # Outputs -----
   
     # output$downloadButtonsDiv <- 
     #   shiny::renderUI({
@@ -247,13 +231,13 @@ server <-
     #   shiny::renderUI({
     #     navsetCardBarChartCaption()
     #   })
-    # 
-    # output$navsetCardTab <- 
-    #   shiny::renderUI({
-    #     shiny::req(showNavsetCardTab())
-    #     navsetCardTab # `scr##_navsetCardTab.R`
-    #   })
-    # 
+
+    output$navsetCardTab <-
+      shiny::renderUI({
+        shiny::req(showNavsetCardTab())
+        navsetCardTab # `scr##_navsetCardTab.R`
+      })
+
     # output$navsetCardTable <- 
     #   reactable::renderReactable({
     #     navsetCardTable()
@@ -263,22 +247,22 @@ server <-
     #   shiny::renderUI({
     #     navsetCardTableCaption()
     #   })
-    # 
-    # output$navsetCardTabSummary <- 
+
+    # output$navsetCardTabSummary <-
     #   shiny::renderUI({
     #     navsetCardTabSummary()
     #   })
-    # 
-    # output$navsetCardTabTitle <- 
-    #   shiny::renderUI({
-    #     navsetCardTabTitle()
-    #   })
-    # 
-    # output$navsetCardTabTooltip <- 
-    #   shiny::renderUI({
-    #     navsetCardTabTooltipText()
-    #   })
-    # 
+
+    output$navsetCardTabTitle <-
+      shiny::renderUI({
+        navsetCardTabTitle()
+      })
+
+    output$navsetCardTabTooltipText <-
+      shiny::renderUI({
+        navsetCardTabTooltipText()
+      })
+
     # output$navsetCardTimeSeries <- 
     #   plotly::renderPlotly({
     #     navsetCardTimeSeries()
