@@ -23,10 +23,10 @@ ui <- htmltools::htmlTemplate(
         htmltools::tagAppendAttributes(
           #https://getbootstrap.com/docs/5.0/utilities/api/
           class = "border-0 rounded-0 shadow-none"
-        )#,
+        ),
       
       # shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
-      # shiny::htmlOutput(outputId = "pageBottomText")
+      shiny::htmlOutput(outputId = "pageBottomText")
     )
   )
 
@@ -38,7 +38,7 @@ server <-
   function(input, output, session) {
     
     shinyjs::useShinyjs(html = TRUE)
-    # shinyjs::hideElement(id = "downloadButtonsDiv")
+    shinyjs::hideElement(id = "downloadButtonsDiv")
     shinyjs::hideElement(id = "navsetCardTab")
     
     
@@ -48,7 +48,7 @@ server <-
       # shinyjs::showElement(id = "downloadButtonsDiv")
       shinyjs::showElement(id = "navsetCardTab")
       showNavsetCardTab(TRUE)
-      # showPageBottomText(TRUE)
+      showPageBottomText(TRUE)
     })
     
     # To update available dates based on selected station
@@ -151,9 +151,9 @@ server <-
         fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
       })
     
-    # pageBottomText <- shiny::eventReactive(seasonalTotals(), {
-    #   fxn_pageBottomText()
-    # })
+    pageBottomText <- shiny::eventReactive(seasonalTotals(), {
+      fxn_pageBottomText()
+    })
     
     seasonalTotals <-
       eventReactive(input$calculateTotal, {
@@ -273,11 +273,11 @@ server <-
     #     navsetCardTimeSeriesCaption()
     #   })
 
-    # output$pageBottomText <-
-    #   shiny::renderUI({
-    #     shiny::req(showPageBottomText())
-    #     pageBottomText()
-    #   })
+    output$pageBottomText <-
+      shiny::renderUI({
+        shiny::req(showPageBottomText())
+        pageBottomText()
+      })
 }
 
 

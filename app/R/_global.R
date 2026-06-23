@@ -233,4 +233,4 @@ chillVariables <-
 navsetCardTabTitleIcon <- shiny::reactiveVal(value = "bar-chart-fill")
 
 showNavsetCardTab <- reactiveVal(FALSE)
-# showPageBottomText <- reactiveVal(FALSE)
+showPageBottomText <- reactiveVal(FALSE)

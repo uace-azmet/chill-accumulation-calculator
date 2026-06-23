@@ -2,7 +2,7 @@ sidebar <-
   bslib::sidebar(
     width = 300,
     position = "left",
-    open = list(desktop = "always", mobile = "always-above"),
+    open = list(desktop = "open", mobile = "always-above"),
     id = "sidebar",
     title = NULL,
     bg = "#FFFFFF",
