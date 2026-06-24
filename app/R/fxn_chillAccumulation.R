@@ -1,0 +1,179 @@
+#' `fxn_chillAccumulation` - Calculates chill accumulation by day and season for period of interest and individual years
+#' 
+#' @param azmetStation - AZMet station selection by user
+#' @param startDate - Start date of period of interest
+#' @param endDate - End date of period of interest
+#' @param chillVariable - Chill variable selected by user
+#' @return `chillAccumulation` - List of daily [[1]] and seasonal [[2]] data tables of values for individual years
+
+
+fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariable) {
+  
+  azmetStationStartDate <- 
+    dplyr::filter(azmetStationMetadata, meta_station_name == azmetStation) %>% 
+    dplyr::pull(start_date)
+    
+  
+  # Data download -----
+  
+  startDateDownload <- startDate
+  endDateDownload <- endDate
+  
+  while (startDateDownload >= azmetStationStartDate) {
+    if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+      azHourly <-  
+        fxn_azHourly(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
+      azDaily <- 
+        fxn_azDaily(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
+    }
+    
+    if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+      if (exists("azHourlySeasons") == FALSE) {
+        azHourlySeasons <- azHourly
+      } else {
+        azHourlySeasons <- rbind(azHourlySeasons, azHourly)
+      }
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
+      if (exists("azDailySeasons") == FALSE) {
+        azDailySeasons <- azDaily
+      } else {
+        azDailySeasons <- rbind(azDailySeasons, azDaily)
+      }
+    }
+    
+    startDateDownload <- 
+      min(seq(lubridate::date(startDateDownload), length = 2, by = "-1 year"))
+    
+    endDateDownload <- 
+      min(seq(lubridate::date(endDateDownload), length = 2, by = "-1 year"))
+  }
+  
+  
+  # Data transform -----
+  
+  if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+    azDailySeasons <- azHourlySeasons %>% 
+      fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
+  } else if (chillVariable == "Hours between 32 and 45 °F") {
+    azDailySeasons <- azDailySeasons %>%
+      dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
+  } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+    azDailySeasons <- azDailySeasons
+  }
+  
+  if (chillVariable == "Chill Portions") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = chill_portions)
+  } else if (chillVariable == "Hours below 32 °F") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = chill_hours_32F)
+  } else if (chillVariable == "Hours below 45 °F") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = chill_hours_45F)
+  } else if (chillVariable == "Hours above 68 °F") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = chill_hours_68F)
+  } else if (chillVariable == "Hours between 32 and 45 °F") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = chill_hours_3245F)
+  } else if (chillVariable == "Utah Model") {
+    azDailySeasons <- azDailySeasons %>% 
+      dplyr::rename(chill_variable = utah_model)
+  }
+  
+  azDailySeasons <- azDailySeasons %>% 
+    dplyr::select(dplyr::all_of(datetime, meta_station_name, chill_variable))
+  
+  
+  while (startDate >= azmetStationStartDate) {
+    
+    userDateRange <- lubridate::interval(start = startDate, end = endDate)
+    
+    if (azmetStation == "Yuma N.Gila" & startDate %within% yugNodataInterval & endDate %within% yugNodataInterval) {
+      # Handle empty daily data table at YUG
+      singleYearDaily <-
+        tibble::tibble( 
+          datetime = seq(lubridate::ymd(startDate), lubridate::ymd(endDate), by = "days"),
+          meta_station_name = azmetStation,
+          chill_variable = NA_real_,
+          chill_variable_acc = NA_real_
+        )
+    } else {
+      singleYearDaily <- 
+        dplyr::filter(azDailySeasons, datetime >= startDate & datetime <= endDate)
+    }
+    
+    singleYearDaily <- singleYearDaily %>% 
+      dplyr::mutate(
+        chill_variable_acc = 
+          dplyr::if_else(
+            condition = is.na(chill_variable),
+            true = NA_real_,
+            false = 
+              round((cumsum(tidyr::replace_na(chill_variable, 0))), digits = 1)
+          ),
+        date_year_label = 
+          dplyr::if_else(
+            condition = lubridate::year(startDate) == lubridate::year(endDate),
+            true = as.character(lubridate::year(startDate)),
+            false = paste(lubridate::year(startDate), lubridate::year(endDate), sep = "-")
+          ),
+        day_of_period = dplyr::row_number()
+      )
+    
+    if (azmetStation == "Yuma N.Gila" & lubridate::int_overlaps(int1 = yugNodataInterval, int2 = userDateRange) == TRUE) {
+      # Handle partially empty or empty daily data table at YUG
+      singleYearDaily <- singleYearDaily %>%
+        dplyr::mutate(
+          chill_variable_acc =
+            dplyr::if_else(
+              condition = datetime < yugNodataStartDate,
+              true = chill_variable_acc,
+              false = NA_real_
+            )
+        )
+    }
+    
+    # With `singleYearDaily` transformed, calculate seasonal totals
+    singleYearTotal <-
+      fxn_chillAccumulationSeasonal(
+        azmetStation = azmetStation,
+        inData = singleYearDaily,
+        startDate = startDate,
+        endDate = endDate,
+        # etEquation = etEquation,
+        userDateRange = userDateRange
+      )  
+    
+    # Build data tables for return
+    if (exists("dailyTotals") == FALSE) {
+      dailyTotals <- singleYearDaily
+    } else {
+      dailyTotals <- rbind(dailyTotals, singleYearDaily)
+    }
+    
+    if (exists("seasonalTotals") == FALSE) {
+      seasonalTotals <- singleYearTotal
+    } else {
+      seasonalTotals <- rbind(seasonalTotals, singleYearTotal)
+    }
+    
+    # Setup for analysis of data from previous year
+    startDate <- min(seq(lubridate::date(startDate), length = 2, by = "-1 year"))
+    endDate <- min(seq(lubridate::date(endDate), length = 2, by = "-1 year"))
+  }
+  
+  return(list(dailyTotals, seasonalTotals))
+      
+      
+    
+}

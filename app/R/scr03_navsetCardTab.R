@@ -13,7 +13,7 @@ navsetCardTab <-
     bslib::nav_panel(
       title = "Bar Chart",
       value = "barChart",
-      
+      tableOutput("seasonalTable")
       # plotly::plotlyOutput(outputId = "navsetCardBarChart"),
       # shiny::htmlOutput(outputId = "navsetCardBarChartCaption")
     ),
@@ -21,7 +21,7 @@ navsetCardTab <-
     bslib::nav_panel(
       title = "Table",
       value = "table",
-      
+      tableOutput("dailyTable")
       # reactable::reactableOutput(outputId = "navsetCardTable", height = "100%"),
       # shiny::htmlOutput(outputId = "navsetCardTableCaption")
     ),

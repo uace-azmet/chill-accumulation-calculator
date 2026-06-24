@@ -7,113 +7,112 @@
 #' @return `seasonalTotals` - Data table of seasonal chill accumulation from individual years
 
 
-fxn_seasonalTotals <- 
-  function(azmetStation, startDate, endDate, chillVariable) {
-    
-    azmetStationStartDate <- 
-      dplyr::filter(azmetStationMetadata, meta_station_name == azmetStation) %>% 
-      dplyr::pull(start_date)
-    
-    
-    # Data download -----
-    
-    startDateDownload <- startDate
-    endDateDownload <- endDate
-    
-    while (startDateDownload >= azmetStationStartDate) {
-      if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-        azHourly <-  
-          fxn_azHourly(
-            azmetStation = azmetStation,
-            startDate = startDateDownload, # To call API by individual season
-            endDate = endDateDownload
-          )
-      } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
-        azDaily <- 
-          fxn_azDaily(
-            azmetStation = azmetStation,
-            startDate = startDateDownload, # To call API by individual season
-            endDate = endDateDownload
-          )
-      }
-      
-      if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-        if (exists("azHourlySeasons") == FALSE) {
-          azHourlySeasons <- azHourly
-        } else {
-          azHourlySeasons <- rbind(azHourlySeasons, azHourly)
-        }
-      } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
-        if (exists("azDailySeasons") == FALSE) {
-          azDailySeasons <- azDaily
-        } else {
-          azDailySeasons <- rbind(azDailySeasons, azDaily)
-        }
-      }
-      
-      startDateDownload <- 
-        min(seq(lubridate::date(startDateDownload), length = 2, by = "-1 year"))
-      
-      endDateDownload <- 
-        min(seq(lubridate::date(endDateDownload), length = 2, by = "-1 year"))
-    }
-    
-    
-    # Data transform -----
-    
-    # New variables
+fxn_seasonalTotals <- function(azmetStation, startDate, endDate, chillVariable) {
+  
+  azmetStationStartDate <- 
+    dplyr::filter(azmetStationMetadata, meta_station_name == azmetStation) %>% 
+    dplyr::pull(start_date)
+  
+  
+  # Data download -----
+  
+  startDateDownload <- startDate
+  endDateDownload <- endDate
+  
+  while (startDateDownload >= azmetStationStartDate) {
     if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-      azDailySeasons <- azHourlySeasons %>% 
-        fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
-    } else if (chillVariable == "Hours between 32 and 45 °F") {
-      azDailySeasons <- azDailySeasons %>%
-        dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
-    } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
-      azDailySeasons <- azDailySeasons
+      azHourly <-  
+        fxn_azHourly(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
+      azDaily <- 
+        fxn_azDaily(
+          azmetStation = azmetStation,
+          startDate = startDateDownload, # To call API by individual season
+          endDate = endDateDownload
+        )
     }
     
-     
-    # Seasonal totals -----
+    if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+      if (exists("azHourlySeasons") == FALSE) {
+        azHourlySeasons <- azHourly
+      } else {
+        azHourlySeasons <- rbind(azHourlySeasons, azHourly)
+      }
+    } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
+      if (exists("azDailySeasons") == FALSE) {
+        azDailySeasons <- azDaily
+      } else {
+        azDailySeasons <- rbind(azDailySeasons, azDaily)
+      }
+    }
     
-    while (startDate >= azmetStationStartDate) {
-      seasonalData <- 
-        dplyr::filter(azDailySeasons, datetime >= startDate & datetime <= endDate)
-      
-      # Calculate seasonal total from individual year and prepare data for graph
-      chillTotal <- 
-        fxn_chillTotal(
-          inData = seasonalData,
-          azmetStation = azmetStation, 
-          startDate = startDate, 
-          endDate = endDate,
-          chillVariable = chillVariable
+    startDateDownload <- 
+      min(seq(lubridate::date(startDateDownload), length = 2, by = "-1 year"))
+    
+    endDateDownload <- 
+      min(seq(lubridate::date(endDateDownload), length = 2, by = "-1 year"))
+  }
+  
+  
+  # Data transform -----
+  
+  # New variables
+  if (chillVariable %in% c("Chill Portions", "Utah Model")) {
+    azDailySeasons <- azHourlySeasons %>% 
+      fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation, chillVariable = chillVariable)
+  } else if (chillVariable == "Hours between 32 and 45 °F") {
+    azDailySeasons <- azDailySeasons %>%
+      dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
+  } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+    azDailySeasons <- azDailySeasons
+  }
+  
+  
+  # Seasonal totals -----
+  
+  while (startDate >= azmetStationStartDate) {
+    seasonalData <- 
+      dplyr::filter(azDailySeasons, datetime >= startDate & datetime <= endDate)
+    
+    # Calculate seasonal total from individual year and prepare data for graph
+    chillTotal <- 
+      fxn_chillTotal(
+        inData = seasonalData,
+        azmetStation = azmetStation, 
+        startDate = startDate, 
+        endDate = endDate,
+        chillVariable = chillVariable
+      )
+    
+    # Account for multi-month absence of YUG data in 2021
+    if (azmetStation == "Yuma N.Gila") {
+      nodataDateRange <-
+        lubridate::interval(
+          start = lubridate::date("2021-06-16"),
+          end = lubridate::date("2021-10-21")
         )
       
-      # Account for multi-month absence of YUG data in 2021
-      if (azmetStation == "Yuma N.Gila") {
-        nodataDateRange <-
-          lubridate::interval(
-            start = lubridate::date("2021-06-16"),
-            end = lubridate::date("2021-10-21")
-          )
-  
-        userDateRange <- lubridate::interval(start = startDate, end = endDate)
-  
-        if (lubridate::int_overlaps(int1 = nodataDateRange, int2 = userDateRange) == TRUE) {
-          chillTotal$chillTotal <- NA_real_
-          chillTotal$chillTotalLabel <- "NA"
-        }
-      }
-  
-      if (exists("seasonalTotals") == FALSE) {
-        seasonalTotals <- chillTotal
-      } else {
-        seasonalTotals <- rbind(seasonalTotals, chillTotal)
-      }
+      userDateRange <- lubridate::interval(start = startDate, end = endDate)
       
-      startDate <- min(seq(lubridate::date(startDate), length = 2, by = "-1 year"))
-      endDate <- min(seq(lubridate::date(endDate), length = 2, by = "-1 year"))
+      if (lubridate::int_overlaps(int1 = nodataDateRange, int2 = userDateRange) == TRUE) {
+        chillTotal$chillTotal <- NA_real_
+        chillTotal$chillTotalLabel <- "NA"
+      }
     }
     
-    return(seasonalTotals)
+    if (exists("seasonalTotals") == FALSE) {
+      seasonalTotals <- chillTotal
+    } else {
+      seasonalTotals <- rbind(seasonalTotals, chillTotal)
+    }
+    
+    startDate <- min(seq(lubridate::date(startDate), length = 2, by = "-1 year"))
+    endDate <- min(seq(lubridate::date(endDate), length = 2, by = "-1 year"))
   }
+  
+  return(list(azDailySeasons, seasonalTotals))
+}

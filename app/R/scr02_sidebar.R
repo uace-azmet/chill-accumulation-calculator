@@ -20,7 +20,7 @@ sidebar <-
       htmltools::HTML("&nbsp;<strong>DATA OPTIONS</strong>&nbsp;"),
       bslib::tooltip(
         bsicons::bs_icon("info-circle"),
-        "Select an AZMet station, chill variable, and dates for the start and end of the season of interest. Then, click or tap 'CALCULATE TOTAL'.",
+        "Select an AZMet station, chill variable, and dates for the start and end of the period of interest. Then, click or tap 'CALCULATE TOTAL'.",
         id = "infoDataOptions",
         placement = "right"
       ),

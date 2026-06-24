@@ -129,10 +129,10 @@ server <-
     # Reactives -----
     
     # navsetCardTabSummary <-
-    #   shiny::eventReactive(totalEvapotranspiration(), {
+    #   shiny::eventReactive(seasonalTotals(), {
     #     fxn_navsetCardTabSummary(
     #       azmetStation = input$azmetStation,
-    #       inData = totalEvapotranspiration()[[2]],
+    #       inData = seasonalTotals(), #totalEvapotranspiration()[[2]],
     #       startDate = input$startDate,
     #       endDate = input$endDate
     #     )
@@ -200,6 +200,14 @@ server <-
     
     
     # Outputs -----
+    
+    output$dailyTable <- renderTable({
+      seasonalTotals()[[1]]
+    })
+    
+    output$seasonalTable <- renderTable({
+      seasonalTotals()[[2]]
+    })
   
     # output$downloadButtonsDiv <- 
     #   shiny::renderUI({

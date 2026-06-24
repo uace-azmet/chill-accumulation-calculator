@@ -69,12 +69,12 @@ yugNodataInterval <- lubridate::interval(yugNodataStartDate, yugNodataEndDate)
 # Derived (after data retrieved from station) variables
 dailyVarsDerived <- 
   c(
-    "chill_hours_0C",
-    "chill_hours_20C",
+    # "chill_hours_0C",
+    # "chill_hours_20C",
     "chill_hours_32F",
     "chill_hours_45F",
-    "chill_hours_68F",
-    "chill_hours_7C"#,
+    "chill_hours_68F"#,
+    # "chill_hours_7C",
     # "dwpt_mean", 
     # "dwpt_meanF", 
     # "eto_azmet",
@@ -113,13 +113,13 @@ dailyVarsDerived <-
 # Identification and date variables
 dailyVarsID <- 
   c(
-    "date_doy", 
-    "date_year", 
+    # "date_doy", 
+    # "date_year", 
     "datetime", 
-    "meta_needs_review", 
-    "meta_station_id", 
-    "meta_station_name", 
-    "meta_version"
+    # "meta_needs_review", 
+    # "meta_station_id", 
+    "meta_station_name"#, 
+    # "meta_version"
   )
 
 # Measured (or dervied at station datalogger) variables
@@ -186,12 +186,12 @@ hourlyVarsID <-
   c(
     "date_datetime",
     "date_doy",
-    "date_hour",
+    # "date_hour",
     "date_year", 
-    "meta_needs_review", 
-    "meta_station_id", 
-    "meta_station_name", 
-    "meta_version"
+    # "meta_needs_review", 
+    # "meta_station_id", 
+    # "meta_station_name", 
+    # "meta_version"
   )
 
 # Measured (or derived at station datalogger) variables
