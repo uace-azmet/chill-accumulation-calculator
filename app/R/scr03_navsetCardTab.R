@@ -13,10 +13,10 @@ navsetCardTab <-
     bslib::nav_panel(
       title = "Bar Chart",
       value = "barChart",
-      tableOutput("seasonalTable")
+      # tableOutput("seasonalTable")
       
-      # plotly::plotlyOutput(outputId = "navsetCardBarChart"),
-      # shiny::htmlOutput(outputId = "navsetCardBarChartCaption")
+      plotly::plotlyOutput(outputId = "navsetCardBarChart"),
+      shiny::htmlOutput(outputId = "navsetCardBarChartCaption")
     ),
     
     bslib::nav_panel(

@@ -128,11 +128,31 @@ server <-
     
     # Reactives -----
     
+    navsetCardBarChart <- 
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardBarChart(
+          inData = chillAccumulation()[[2]],
+          azmetStation = input$azmetStation,
+          chillVariable = input$chillVariable
+        )
+      })
+    
+    navsetCardBarChartCaption <- 
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardBarChartCaption(
+          azmetStation = input$azmetStation,
+          inData = chillAccumulation()[[2]],
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
+    
     navsetCardTabSummary <-
       shiny::eventReactive(chillAccumulation(), {
         fxn_navsetCardTabSummary(
           azmetStation = input$azmetStation,
-          inData = chillAccumulation()[[2]], #totalEvapotranspiration()[[2]],
+          inData = chillAccumulation()[[2]],
           startDate = input$startDate,
           endDate = input$endDate,
           chillVariable = input$chillVariable
@@ -231,16 +251,16 @@ server <-
     #       vroom::vroom_write(x = totalEvapotranspiration()[[1]], file = file, delim = "\t")
     #     }
     #   )
-    # 
-    # output$navsetCardBarChart <- 
-    #   plotly::renderPlotly({
-    #     navsetCardBarChart()
-    #   })
-    # 
-    # output$navsetCardBarChartCaption <- 
-    #   shiny::renderUI({
-    #     navsetCardBarChartCaption()
-    #   })
+
+    output$navsetCardBarChart <-
+      plotly::renderPlotly({
+        navsetCardBarChart()
+      })
+
+    output$navsetCardBarChartCaption <-
+      shiny::renderUI({
+        navsetCardBarChartCaption()
+      })
 
     output$navsetCardTab <-
       shiny::renderUI({
