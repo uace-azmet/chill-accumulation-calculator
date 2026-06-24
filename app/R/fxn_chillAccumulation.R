@@ -152,7 +152,7 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
         inData = singleYearDaily,
         startDate = startDate,
         endDate = endDate,
-        # etEquation = etEquation,
+        chillVariable = chillVariable,
         userDateRange = userDateRange
       )
     
