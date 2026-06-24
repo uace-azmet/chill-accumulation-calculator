@@ -62,7 +62,9 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
   
   if (chillVariable %in% c("Chill Portions", "Utah Model")) {
     azDailySeasons <- azHourlySeasons %>% 
-      fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
+      fxn_hourlyChillVarsToDaily(
+        inData = ., azmetStation = azmetStation, chillVariable = chillVariable
+      )
   } else if (chillVariable == "Hours between 32 and 45 °F") {
     azDailySeasons <- azDailySeasons %>%
       dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
@@ -72,26 +74,26 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
   
   if (chillVariable == "Chill Portions") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = chill_portions)
+      dplyr::rename(chill = chill_portions)
   } else if (chillVariable == "Hours below 32 °F") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = chill_hours_32F)
+      dplyr::rename(chill = chill_hours_32F)
   } else if (chillVariable == "Hours below 45 °F") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = chill_hours_45F)
+      dplyr::rename(chill = chill_hours_45F)
   } else if (chillVariable == "Hours above 68 °F") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = chill_hours_68F)
+      dplyr::rename(chill = chill_hours_68F)
   } else if (chillVariable == "Hours between 32 and 45 °F") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = chill_hours_3245F)
+      dplyr::rename(chill = chill_hours_3245F)
   } else if (chillVariable == "Utah Model") {
     azDailySeasons <- azDailySeasons %>% 
-      dplyr::rename(chill_variable = utah_model)
+      dplyr::rename(chill = utah_model)
   }
   
   azDailySeasons <- azDailySeasons %>% 
-    dplyr::select(dplyr::all_of(c("datetime", "meta_station_name", "chill_variable")))
+    dplyr::select(dplyr::all_of(c("datetime", "meta_station_name", "chill")))
   
   # Calculate accumulation by individual year
   while (startDate >= azmetStationStartDate) {
@@ -104,8 +106,8 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
         tibble::tibble( 
           datetime = seq(lubridate::ymd(startDate), lubridate::ymd(endDate), by = "days"),
           meta_station_name = azmetStation,
-          chill_variable = NA_real_,
-          chill_variable_acc = NA_real_
+          chill = NA_real_,
+          chill_acc = NA_real_
         )
     } else {
       singleYearDaily <- 
@@ -114,12 +116,12 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
     
     singleYearDaily <- singleYearDaily %>% 
       dplyr::mutate(
-        chill_variable_acc = 
+        chill_acc = 
           dplyr::if_else(
-            condition = is.na(chill_variable),
+            condition = is.na(chill),
             true = NA_real_,
             false = 
-              round((cumsum(tidyr::replace_na(chill_variable, 0))), digits = 1)
+              round((cumsum(tidyr::replace_na(chill, 0))), digits = 1)
           ),
         date_year_label = 
           dplyr::if_else(
@@ -134,10 +136,10 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
       # Handle partially empty or empty daily data table at YUG
       singleYearDaily <- singleYearDaily %>%
         dplyr::mutate(
-          chill_variable_acc =
+          chill_acc =
             dplyr::if_else(
               condition = datetime < yugNodataStartDate,
-              true = chill_variable_acc,
+              true = chill_acc,
               false = NA_real_
             )
         )

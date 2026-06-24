@@ -17,7 +17,7 @@ ui <- htmltools::htmlTemplate(
         sidebar = sidebar, # `scr##_sidebar.R`
         
         shiny::htmlOutput(outputId = "navsetCardTabTitle"),
-        # shiny::htmlOutput(outputId = "navsetCardTabSummary"),
+        shiny::htmlOutput(outputId = "navsetCardTabSummary"),
         shiny::uiOutput(outputId = "navsetCardTab")
       ) |>
         htmltools::tagAppendAttributes(
@@ -128,15 +128,16 @@ server <-
     
     # Reactives -----
     
-    # navsetCardTabSummary <-
-    #   shiny::eventReactive(seasonalTotals(), {
-    #     fxn_navsetCardTabSummary(
-    #       azmetStation = input$azmetStation,
-    #       inData = seasonalTotals(), #totalEvapotranspiration()[[2]],
-    #       startDate = input$startDate,
-    #       endDate = input$endDate
-    #     )
-    #   })
+    navsetCardTabSummary <-
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardTabSummary(
+          azmetStation = input$azmetStation,
+          inData = chillAccumulation()[[2]], #totalEvapotranspiration()[[2]],
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
     
     navsetCardTabTitle <-
       shiny::eventReactive(list(navsetCardTabTitleIcon(), chillAccumulation()), {
@@ -257,10 +258,10 @@ server <-
     #     navsetCardTableCaption()
     #   })
 
-    # output$navsetCardTabSummary <-
-    #   shiny::renderUI({
-    #     navsetCardTabSummary()
-    #   })
+    output$navsetCardTabSummary <-
+      shiny::renderUI({
+        navsetCardTabSummary()
+      })
 
     output$navsetCardTabTitle <-
       shiny::renderUI({

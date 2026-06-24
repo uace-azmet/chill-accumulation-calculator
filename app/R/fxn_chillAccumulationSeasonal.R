@@ -12,7 +12,7 @@ fxn_chillAccumulationSeasonal <- function(azmetStation, inData, startDate, endDa
   
   chillAccumulationSeasonal <- inData %>%
     dplyr::group_by(meta_station_name) %>%
-    dplyr::summarize(chill_accumulation_seasonal = sum(chill_variable, na.rm = TRUE))
+    dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE))
   
   chillAccumulationSeasonal <- chillAccumulationSeasonal %>% 
     # dplyr::mutate(
@@ -31,7 +31,7 @@ fxn_chillAccumulationSeasonal <- function(azmetStation, inData, startDate, endDa
   
   if (azmetStation == "Yuma N.Gila" & lubridate::int_overlaps(int1 = yugNodataInterval, int2 = userDateRange) == TRUE) {
     chillAccumulationSeasonal$chill_accumulation_seasonal <- NA_real_
-    chillAccumulationSeasonal$chill_accumulation_seasonal_label <- "NA"
+    # chillAccumulationSeasonal$chill_accumulation_seasonal_label <- "NA"
   }
   
   return(chillAccumulationSeasonal)
