@@ -91,9 +91,9 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
   }
   
   azDailySeasons <- azDailySeasons %>% 
-    dplyr::select(dplyr::all_of(datetime, meta_station_name, chill_variable))
+    dplyr::select(dplyr::all_of(c("datetime", "meta_station_name", "chill_variable")))
   
-  
+  # Calculate accumulation by individual year
   while (startDate >= azmetStationStartDate) {
     
     userDateRange <- lubridate::interval(start = startDate, end = endDate)
@@ -144,7 +144,7 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
     }
     
     # With `singleYearDaily` transformed, calculate seasonal totals
-    singleYearTotal <-
+    singleYearSeasonal <-
       fxn_chillAccumulationSeasonal(
         azmetStation = azmetStation,
         inData = singleYearDaily,
@@ -152,19 +152,19 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
         endDate = endDate,
         # etEquation = etEquation,
         userDateRange = userDateRange
-      )  
+      )
     
     # Build data tables for return
-    if (exists("dailyTotals") == FALSE) {
-      dailyTotals <- singleYearDaily
+    if (exists("dailyAccumulations") == FALSE) {
+      dailyAccumulations <- singleYearDaily
     } else {
-      dailyTotals <- rbind(dailyTotals, singleYearDaily)
+      dailyAccumulations <- rbind(dailyAccumulations, singleYearDaily)
     }
     
-    if (exists("seasonalTotals") == FALSE) {
-      seasonalTotals <- singleYearTotal
+    if (exists("seasonalAccumulations") == FALSE) {
+      seasonalAccumulations <- singleYearSeasonal
     } else {
-      seasonalTotals <- rbind(seasonalTotals, singleYearTotal)
+      seasonalAccumulations <- rbind(seasonalAccumulations, singleYearSeasonal)
     }
     
     # Setup for analysis of data from previous year
@@ -172,8 +172,5 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
     endDate <- min(seq(lubridate::date(endDate), length = 2, by = "-1 year"))
   }
   
-  return(list(dailyTotals, seasonalTotals))
-      
-      
-    
+  return(list(dailyAccumulations, seasonalAccumulations))
 }

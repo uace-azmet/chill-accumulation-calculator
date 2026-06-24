@@ -187,7 +187,7 @@ hourlyVarsID <-
     "date_datetime",
     "date_doy",
     # "date_hour",
-    "date_year", 
+    "date_year"#, 
     # "meta_needs_review", 
     # "meta_station_id", 
     # "meta_station_name", 

@@ -44,7 +44,7 @@ server <-
     
     # Observables -----
     
-    shiny::observeEvent(seasonalTotals(), {
+    shiny::observeEvent(chillAccumulation(), {
       # shinyjs::showElement(id = "downloadButtonsDiv")
       shinyjs::showElement(id = "navsetCardTab")
       showNavsetCardTab(TRUE)
@@ -139,7 +139,7 @@ server <-
     #   })
     
     navsetCardTabTitle <-
-      shiny::eventReactive(list(navsetCardTabTitleIcon(), seasonalTotals()), {
+      shiny::eventReactive(list(navsetCardTabTitleIcon(), chillAccumulation()), {
         fxn_navsetCardTabTitle(
           azmetStation = input$azmetStation,
           navsetCardTabTitleIcon = navsetCardTabTitleIcon()
@@ -151,12 +151,13 @@ server <-
         fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
       })
     
-    pageBottomText <- shiny::eventReactive(seasonalTotals(), {
-      fxn_pageBottomText()
-    })
+    pageBottomText <- 
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_pageBottomText()
+      })
     
-    seasonalTotals <-
-      eventReactive(input$calculateTotal, {
+    chillAccumulation <- 
+      shiny::eventReactive(input$calculateTotal, {
         # Catch input errors before data download
         shiny::validate(
           shiny::need(
@@ -190,7 +191,7 @@ server <-
           add = TRUE
         )
         
-        fxn_seasonalTotals(
+        fxn_chillAccumulation(
           azmetStation = input$azmetStation,
           startDate = input$startDate,
           endDate = input$endDate,
@@ -202,11 +203,11 @@ server <-
     # Outputs -----
     
     output$dailyTable <- renderTable({
-      seasonalTotals()[[1]]
+      chillAccumulation()[[1]]
     })
     
     output$seasonalTable <- renderTable({
-      seasonalTotals()[[2]]
+      chillAccumulation()[[2]]
     })
   
     # output$downloadButtonsDiv <- 
