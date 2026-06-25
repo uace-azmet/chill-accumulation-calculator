@@ -25,7 +25,7 @@ ui <- htmltools::htmlTemplate(
           class = "border-0 rounded-0 shadow-none"
         ),
       
-      # shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
+      shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
       shiny::htmlOutput(outputId = "pageBottomText")
     )
   )
@@ -45,7 +45,7 @@ server <-
     # Observables -----
     
     shiny::observeEvent(chillAccumulation(), {
-      # shinyjs::showElement(id = "downloadButtonsDiv")
+      shinyjs::showElement(id = "downloadButtonsDiv")
       shinyjs::showElement(id = "navsetCardTab")
       showNavsetCardTab(TRUE)
       showPageBottomText(TRUE)
@@ -267,26 +267,58 @@ server <-
       chillAccumulation()[[2]]
     })
   
-    # output$downloadButtonsDiv <- 
-    #   shiny::renderUI({
-    #     fxn_downloadButtonsDiv()
-    #   })
-    # 
-    # output$downloadCSV <- 
-    #   shiny::downloadHandler(
-    #     filename = function() {"AZMet-total-evaporation-calculator.csv"},
-    #     content = function(file) {
-    #       vroom::vroom_write(x = totalEvapotranspiration()[[1]], file = file, delim = ",")
-    #     }
-    #   )
-    # 
-    # output$downloadTSV <- 
-    #   shiny::downloadHandler(
-    #     filename = function() {"AZMet-total-evaporation-calculator.tsv"},
-    #     content = function(file) {
-    #       vroom::vroom_write(x = totalEvapotranspiration()[[1]], file = file, delim = "\t")
-    #     }
-    #   )
+    output$downloadButtonsDiv <-
+      shiny::renderUI({
+        fxn_downloadButtonsDiv()
+      })
+
+    output$downloadCSV <-
+      shiny::downloadHandler(
+        filename = function() {
+          if (input$chillVariable == "Chill Portions") {
+            chillVariableText <- "chill-portions"
+          } else if (input$chillVariable == "Hours below 32 °F") {
+            chillVariableText <- "hours-below-32F"
+          } else if (input$chillVariable == "Hours below 45 °F") {
+            chillVariableText <- "hours-below-45F"
+          } else if (input$chillVariable == "Hours between 32 and 45 °F") {
+            chillVariableText <- "hours-between-32-and-45F"
+          } else if (input$chillVariable == "Hours above 68 °F") {
+            chillVariableText <- "hours-above-68F"
+          } else if (input$chillVariable == "Utah Model") {
+            chillVariableText <- "utah-model-chill-units"
+          }
+          
+          paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".csv")
+        },
+        content = function(file) {
+          vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = ",")
+        }
+      )
+
+    output$downloadTSV <-
+      shiny::downloadHandler(
+        filename = function() {
+          if (input$chillVariable == "Chill Portions") {
+            chillVariableText <- "chill-portions"
+          } else if (input$chillVariable == "Hours below 32 °F") {
+            chillVariableText <- "hours-below-32F"
+          } else if (input$chillVariable == "Hours below 45 °F") {
+            chillVariableText <- "hours-below-45F"
+          } else if (input$chillVariable == "Hours between 32 and 45 °F") {
+            chillVariableText <- "hours-between-32-and-45F"
+          } else if (input$chillVariable == "Hours above 68 °F") {
+            chillVariableText <- "hours-above-68F"
+          } else if (input$chillVariable == "Utah Model") {
+            chillVariableText <- "utah-model-chill-units"
+          }
+          
+          paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".tsv")
+        },
+        content = function(file) {
+          vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = "\t")
+        }
+      )
 
     output$navsetCardBarChart <-
       plotly::renderPlotly({
