@@ -22,10 +22,10 @@ navsetCardTab <-
     bslib::nav_panel(
       title = "Table",
       value = "table",
-      tableOutput("dailyTable")
+      # tableOutput("dailyTable")
       
-      # reactable::reactableOutput(outputId = "navsetCardTable", height = "100%"),
-      # shiny::htmlOutput(outputId = "navsetCardTableCaption")
+      reactable::reactableOutput(outputId = "navsetCardTable", height = "100%"),
+      shiny::htmlOutput(outputId = "navsetCardTableCaption")
     ),
     
     bslib::nav_panel(

@@ -148,6 +148,21 @@ server <-
         )
       })
     
+    navsetCardTable <- 
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardTable(
+          inData = chillAccumulation()[[1]],
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
+    
+    navsetCardTableCaption <-
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardTableCaption(chillVariable = input$chillVariable)
+      })
+    
     navsetCardTabSummary <-
       shiny::eventReactive(chillAccumulation(), {
         fxn_navsetCardTabSummary(
@@ -268,15 +283,15 @@ server <-
         navsetCardTab # `scr##_navsetCardTab.R`
       })
 
-    # output$navsetCardTable <- 
-    #   reactable::renderReactable({
-    #     navsetCardTable()
-    #   })
-    # 
-    # output$navsetCardTableCaption <- 
-    #   shiny::renderUI({
-    #     navsetCardTableCaption()
-    #   })
+    output$navsetCardTable <-
+      reactable::renderReactable({
+        navsetCardTable()
+      })
+
+    output$navsetCardTableCaption <-
+      shiny::renderUI({
+        navsetCardTableCaption()
+      })
 
     output$navsetCardTabSummary <-
       shiny::renderUI({
