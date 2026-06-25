@@ -7,14 +7,6 @@
 fxn_navsetCardTableCaption <- function(chillVariable) {
   
   if (chillVariable == "Chill Portions") {
-    variableUnits <- "portions"
-  } else if (chillVariable == "Utah Model") {
-    variableUnits <- "units"
-  } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
-    variableUnits <- "hours"
-  }
-  
-  if (chillVariable == "Chill Portions") {
     chillVariableText <- "chill portions"
   } else if (chillVariable == "Hours below 32 °F") {
     chillVariableText <- "hours below 32 °F"
@@ -28,30 +20,46 @@ fxn_navsetCardTableCaption <- function(chillVariable) {
     chillVariableText <- "Utah Model chill units"
   }
   
-  captionText <- 
-    paste0(
-      "Values of 'NA' denote no data. Variable key: <strong>Day<sub>period</sub></strong> day number of the period of interest; <strong>Chill</strong> daily chill values in ", variableUnits, " as represented by ", chillVariableText, "; <strong>Chill<sub>cumulative</sub></strong> accumulation of daily chill values in ", variableUnits, " during the period of interest as represented by ", chillVariableText, "."
-    )
+  if (chillVariable == "Chill Portions") {
+    variableUnits <- "portions"
+  } else if (chillVariable == "Utah Model") {
+    variableUnits <- "units"
+  } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
+    variableUnits <- "hours"
+  }
+  
+  standardText <- "Values of 'NA' denote no data."
   
   # Generate caption text with `chillR` reference
   if (chillVariable == "Chill Portions") {
-    captionText <- 
+    standardText <- 
       paste0(
-        captionText, " Chill portions are based on calculations in the", htmltools::tags$code("chillR", style = "color: #606060;"), "R package."
+        standardText, " Chill portions are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package."
       )
   } else if (chillVariable == "Utah Model") {
-    captionText <- 
+    standardText <- 
       paste0(
-        captionText, " Utah Model chill units are based on calculations in the", htmltools::tags$code("chillR", style = "color: #606060;"), "R package. Accumulation values reset daily to 0.0 when negative."
+        standardText, " Utah Model chill units are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package. Accumulation values reset daily to 0.0 when negative."
       )
   } else {
-    captionText <- captionText
+    standardText <- standardText
   }
+  
+  variableKeyText <- 
+    paste0(
+      "Variable key: <strong>Day<sub>period</sub></strong> day number of the period of interest; <strong>Chill</strong> daily chill values in ", variableUnits, " as represented by ", chillVariableText, "; <strong>Chill<sub>cumulative</sub></strong> accumulation of daily chill values in ", variableUnits, " during the period of interest as represented by ", chillVariableText
+    )
   
   # Format caption text as HTML
   navsetCardTableCaption <- 
     htmltools::p(
-      htmltools::HTML(captionText), 
+      htmltools::HTML(
+        paste(
+          standardText,
+          variableKeyText,
+          sep = " "
+        )
+      ), 
       class = "navset-card-caption"
     )
   

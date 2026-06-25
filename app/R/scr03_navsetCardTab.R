@@ -32,8 +32,8 @@ navsetCardTab <-
       title = "Time Series",
       value = "timeSeries",
       
-      # plotly::plotlyOutput(outputId = "navsetCardTimeSeries"),
-      # shiny::htmlOutput(outputId = "navsetCardTimeSeriesCaption")
+      plotly::plotlyOutput(outputId = "navsetCardTimeSeries"),
+      shiny::htmlOutput(outputId = "navsetCardTimeSeriesCaption")
     ),
     
     bslib::nav_item(

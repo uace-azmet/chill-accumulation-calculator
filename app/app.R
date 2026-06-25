@@ -128,6 +128,49 @@ server <-
     
     # Reactives -----
     
+    chillAccumulation <- 
+      shiny::eventReactive(input$calculateTotal, {
+        # Catch input errors before data download
+        shiny::validate(
+          shiny::need(
+            expr = input$startDate <= input$endDate,
+            message = FALSE # Failing validation test
+          ),
+          
+          shiny::need(
+            expr =
+              !(input$azmetStation == "Yuma N.Gila" &
+                  lubridate::int_overlaps(
+                    int1 = yugNodataInterval,
+                    int2 = lubridate::interval(input$startDate, input$endDate)
+                  )
+              ),
+            message = FALSE # Failing validation test
+          )
+        )
+        
+        idCalculateTotal <- shiny::showNotification(
+          ui = "Calculating chill accumulation . . .",
+          action = NULL,
+          duration = NULL,
+          closeButton = FALSE,
+          id = "idCalculateTotal",
+          type = "message"
+        )
+        
+        on.exit(
+          shiny::removeNotification(id = idCalculateTotal),
+          add = TRUE
+        )
+        
+        fxn_chillAccumulation(
+          azmetStation = input$azmetStation,
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
+    
     navsetCardBarChart <- 
       shiny::eventReactive(chillAccumulation(), {
         fxn_navsetCardBarChart(
@@ -187,52 +230,30 @@ server <-
         fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
       })
     
-    pageBottomText <- 
+    navsetCardTimeSeries <- 
       shiny::eventReactive(chillAccumulation(), {
-        fxn_pageBottomText()
-      })
-    
-    chillAccumulation <- 
-      shiny::eventReactive(input$calculateTotal, {
-        # Catch input errors before data download
-        shiny::validate(
-          shiny::need(
-            expr = input$startDate <= input$endDate,
-            message = FALSE # Failing validation test
-          ),
-
-          shiny::need(
-            expr =
-              !(input$azmetStation == "Yuma N.Gila" &
-                  lubridate::int_overlaps(
-                    int1 = yugNodataInterval,
-                    int2 = lubridate::interval(input$startDate, input$endDate)
-                  )
-              ),
-            message = FALSE # Failing validation test
-          )
-        )
-
-        idCalculateTotal <- shiny::showNotification(
-          ui = "Calculating chill accumulation . . .",
-          action = NULL,
-          duration = NULL,
-          closeButton = FALSE,
-          id = "idCalculateTotal",
-          type = "message"
-        )
-
-        on.exit(
-          shiny::removeNotification(id = idCalculateTotal),
-          add = TRUE
-        )
-        
-        fxn_chillAccumulation(
-          azmetStation = input$azmetStation,
+        fxn_navsetCardTimeSeries(
+          inData = chillAccumulation()[[1]],
           startDate = input$startDate,
           endDate = input$endDate,
           chillVariable = input$chillVariable
         )
+      })
+    
+    navsetCardTimeSeriesCaption <-
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_navsetCardTimeSeriesCaption(
+          azmetStation = input$azmetStation,
+          inData = chillAccumulation()[[1]],
+          startDate = input$startDate,
+          endDate = input$endDate,
+          chillVariable = input$chillVariable
+        )
+      })
+    
+    pageBottomText <- 
+      shiny::eventReactive(chillAccumulation(), {
+        fxn_pageBottomText()
       })
     
     
@@ -308,15 +329,15 @@ server <-
         navsetCardTabTooltipText()
       })
 
-    # output$navsetCardTimeSeries <- 
-    #   plotly::renderPlotly({
-    #     navsetCardTimeSeries()
-    #   })
-    # 
-    # output$navsetCardTimeSeriesCaption <- 
-    #   shiny::renderUI({
-    #     navsetCardTimeSeriesCaption()
-    #   })
+    output$navsetCardTimeSeries <-
+      plotly::renderPlotly({
+        navsetCardTimeSeries()
+      })
+
+    output$navsetCardTimeSeriesCaption <-
+      shiny::renderUI({
+        navsetCardTimeSeriesCaption()
+      })
 
     output$pageBottomText <-
       shiny::renderUI({
