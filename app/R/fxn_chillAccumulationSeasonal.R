@@ -96,7 +96,7 @@ fxn_chillAccumulationSeasonal <-
         inData <- inData %>% 
           dplyr::mutate(utah_model_accum = NA_real_)
         
-        for (i in 1:length(inData$chill)) {
+        for (i in 1:nrow(inData)) {
           if (i == 1) {
             if (inData$chill[i] < 0) {
               inData$utah_model_accum[i] <- 0

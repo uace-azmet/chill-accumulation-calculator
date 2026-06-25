@@ -114,15 +114,41 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
         dplyr::filter(azDailySeasons, datetime >= startDate & datetime <= endDate)
     }
     
+    if (chillVariable != "Utah Model") {
+      singleYearDaily <- singleYearDaily %>% 
+        dplyr::mutate(
+          chill_acc = 
+            dplyr::if_else(
+              condition = is.na(chill),
+              true = NA_real_,
+              false = 
+                round((cumsum(tidyr::replace_na(chill, 0))), digits = 1)
+            )
+        )
+    } else if (chillVariable == "Utah Model") {
+      singleYearDaily <- singleYearDaily %>% 
+        dplyr::mutate(chill_acc = NA_real_)
+      
+      for (i in 1:nrow(singleYearDaily)) {
+        if (i == 1) {
+          if (singleYearDaily$chill[i] < 0) {
+            singleYearDaily$chill_acc[i] <- 0
+          } else {
+            singleYearDaily$chill_acc[i] <- singleYearDaily$chill[i]
+          }
+        } else {
+          if (singleYearDaily$chill[i] + singleYearDaily$chill_acc[i - 1] < 0) {
+            singleYearDaily$chill_acc[i] <- 0
+          } else {
+            singleYearDaily$chill_acc[i] <-
+              singleYearDaily$chill[i] + singleYearDaily$chill_acc[i - 1]
+          }
+        }
+      }
+    }
+    
     singleYearDaily <- singleYearDaily %>% 
       dplyr::mutate(
-        chill_acc = 
-          dplyr::if_else(
-            condition = is.na(chill),
-            true = NA_real_,
-            false = 
-              round((cumsum(tidyr::replace_na(chill, 0))), digits = 1)
-          ),
         date_year_label = 
           dplyr::if_else(
             condition = lubridate::year(startDate) == lubridate::year(endDate),
