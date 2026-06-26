@@ -5,40 +5,39 @@
 #' @return `navsetCardTabTitle` - Title for navset card tab section of page based on user input
 
 
-fxn_navsetCardTabTitle <- 
-  function(azmetStation, navsetCardTabTitleIcon) {
-    
-    if (navsetCardTabTitleIcon == "bar-chart-fill") {
-      iconClass = "normal-icon"
-    } else {
-      iconClass = "bolder-icon"
-    }
-    
-    navsetCardTabTitle <- 
-      htmltools::p(
-        htmltools::HTML(
-          paste0(
-            bsicons::bs_icon(navsetCardTabTitleIcon, class = iconClass),
-            htmltools::HTML("&nbsp;&nbsp;"),
-            toupper(
-              htmltools::HTML(
-                paste0(
-                  "<strong>Chill Accumulation at the AZMet ", azmetStation, " Station</strong>"
-                ),
-              )
-            ),
-            htmltools::HTML("&nbsp;"),
-            bslib::tooltip(
-              bsicons::bs_icon("info-circle"),
-              "In addition to the following summary, select from the tabs below to view the calculated accumulation in different contexts.",
-              id = "infoNavsetCardTabTitle",
-              placement = "right"
-            )
-          )
-        ),
-        
-        class = "navset-card-tab-title"
-      )
-    
-    return(navsetCardTabTitle)
+fxn_navsetCardTabTitle <- function(azmetStation, navsetCardTabTitleIcon) {
+  
+  if (navsetCardTabTitleIcon == "bar-chart-fill") {
+    iconClass = "normal-icon"
+  } else {
+    iconClass = "bolder-icon"
   }
+  
+  navsetCardTabTitle <- 
+    htmltools::p(
+      htmltools::HTML(
+        paste0(
+          bsicons::bs_icon(navsetCardTabTitleIcon, class = iconClass),
+          htmltools::HTML("&nbsp;&nbsp;"),
+          toupper(
+            htmltools::HTML(
+              paste0(
+                "<strong>Chill Accumulation at the AZMet ", azmetStation, " Station</strong>"
+              ),
+            )
+          ),
+          htmltools::HTML("&nbsp;"),
+          bslib::tooltip(
+            bsicons::bs_icon("info-circle"),
+            "In addition to the following summary, select from the tabs below to view the calculated accumulation in different contexts.",
+            id = "infoNavsetCardTabTitle",
+            placement = "right"
+          )
+        )
+      ),
+      
+      class = "navset-card-tab-title"
+    )
+  
+  return(navsetCardTabTitle)
+}

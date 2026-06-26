@@ -2,13 +2,13 @@
 #' 
 #' @param inData - returned output from `fxn_hourlyData.R`
 #' @param azmetStation - user-specified AZMet station
-#' @param chillVariable - Chill variable selected by user
 #' @return `hourlyChillVarsToDaily` - Tibble of daily values for chill variables dependent on hourly data
 
 
-fxn_hourlyChillVarsToDaily <- function(inData, azmetStation, chillVariable) {
+fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
   
-  hourlyChillVarsToDaily <- as.data.frame(inData) %>% 
+  hourlyChillVarsToDaily <- 
+    as.data.frame(inData) %>%
     dplyr::rename(
       Year = date_year,
       JDay = date_doy,

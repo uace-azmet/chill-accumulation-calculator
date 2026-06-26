@@ -80,15 +80,13 @@ fxn_navsetCardBarChartCaption <-
       captionText <- 
         paste0(
           captionText,
-          " Chill portions are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package.",
-          sep = " "
+          " Chill portions are based on calculations in the <a href=https://eikeluedeling.r-universe.dev/chillR>chillR</a> R package."
         )
     } else if (chillVariable == "Utah Model") {
       captionText <- 
         paste0(
           captionText,
-          " Utah Model chill units are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package. Accumulation values reset daily to 0.0 when negative.",
-          sep = " "
+          " Utah Model chill units are based on calculations in the <a href=https://eikeluedeling.r-universe.dev/chillR>chillR</a> R package. Accumulation values reset daily to 0.0 when negative."
         )
     } else {
       captionText <- captionText

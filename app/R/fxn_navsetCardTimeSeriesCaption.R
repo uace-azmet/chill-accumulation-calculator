@@ -37,12 +37,12 @@ fxn_navsetCardTimeSeriesCaption <- function(azmetStation, inData, startDate, end
   }
   
   if (length(unique(inData$date_year_label)) == 1) {
-    standardText <- 
+    captionText <- 
       paste0(
         "Chill accumulation (black line in graph) is based on the sum of daily totals during the period of interest as represented by ", chillVariableText, ". Line breaks denote no data for that day. Data for the ", azmetStation, " station in the new AZMet database currently go back to ", gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")), "."
       )
   } else {
-    standardText <- 
+    captionText <- 
       paste0(
         "Chill accumulation for the current year (black line in graph) is based on the sum of daily totals during the period of interest as represented by ", chillVariableText, ". Totals for past years (gray lines in graph) are based on the same start and end month and day, but during those respective years. Line breaks denote no data for that day. Data for the ", azmetStation, " station in the new AZMet database currently go back to ", gsub(" 0", " ", format(azmetStationStartDate, "%B %d, %Y")), "."
       )
@@ -50,17 +50,17 @@ fxn_navsetCardTimeSeriesCaption <- function(azmetStation, inData, startDate, end
   
   # Generate caption text with `chillR` reference
   if (chillVariable == "Chill Portions") {
-    standardText <- 
+    captionText <- 
       paste0(
-        standardText, " Chill portions are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package."
+        captionText, " Chill portions are based on calculations in the <a href=https://eikeluedeling.r-universe.dev/chillR>chillR</a> R package."
       )
   } else if (chillVariable == "Utah Model") {
-    standardText <- 
+    captionText <- 
       paste0(
-        standardText, " Utah Model chill units are based on calculations in the", "<a href=", "https://eikeluedeling.r-universe.dev/chillR>", htmltools::tags$code("chillR", style = "color: #8B0015;"), "</a>", "R package. Accumulation values reset daily to 0.0 when negative."
+        captionText, " Utah Model chill units are based on calculations in the <a href=https://eikeluedeling.r-universe.dev/chillR>chillR</a> R package. Accumulation values reset daily to 0.0 when negative."
       )
   } else {
-    standardText <- standardText
+    captionText <- captionText
   }
   
   variableKeyText <- 
@@ -90,7 +90,7 @@ fxn_navsetCardTimeSeriesCaption <- function(azmetStation, inData, startDate, end
       htmltools::p(
         htmltools::HTML(
           paste(
-            standardText,
+            captionText,
             "However, we do not show chill accumulation for dates during the period from June 16, 2021 through October 21, 2021, when the ", azmetStation, " station was not in operation.",
             variableKeyText,
             sep = " "
@@ -103,11 +103,7 @@ fxn_navsetCardTimeSeriesCaption <- function(azmetStation, inData, startDate, end
     navsetCardTimeSeriesCaption <- 
       htmltools::p(
         htmltools::HTML(
-          paste(
-            standardText,
-            variableKeyText,
-            sep = " "
-          )
+          paste(captionText, variableKeyText, sep = " ")
         ), 
         class = "navset-card-caption"
       )

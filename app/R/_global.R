@@ -34,11 +34,12 @@ shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
 azmetStationMetadata <- azmetr::station_info |>
   dplyr::mutate(end_date = NA) |> # Placeholder until inactive stations are in API and `azmetr`
   dplyr::mutate(
-    end_date = dplyr::if_else(
-      status == "active",
-      lubridate::today(tzone = "America/Phoenix") - 1,
-      end_date
-    )
+    end_date = 
+      dplyr::if_else(
+        status == "active",
+        lubridate::today(tzone = "America/Phoenix") - 1,
+        end_date
+      )
   ) |>
   dplyr::filter(!meta_station_name %in% c("Test"))
 

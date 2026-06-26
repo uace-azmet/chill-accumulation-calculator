@@ -62,9 +62,17 @@ fxn_navsetCardTabSummary <- function(azmetStation, inData, startDate, endDate, c
     }
   } else { # For stations with more than one year of data
     averageTotal <- round(mean(inData$chill_accumulation_seasonal, na.rm = TRUE), digits = 1)
+    
     previousYear <- currentYear - 1
-    previousYearText <- dplyr::filter(inData, end_date_year == previousYear)$date_year_label
-    previousYearTotal <- round(dplyr::filter(inData, end_date_year == previousYear)$chill_accumulation_seasonal, digits = 1)
+    previousYearText <- 
+      dplyr::filter(inData, end_date_year == previousYear) %>% 
+      dplyr::pull(date_year_label)
+    previousYearTotal <- 
+      round(
+        dplyr::filter(inData, end_date_year == previousYear) %>% 
+          dplyr::pull(chill_accumulation_seasonal), 
+        digits = 1
+      )
     
     differenceAverage <- currentYearTotal - averageTotal
     differencePreviousYear <- currentYearTotal - previousYearTotal

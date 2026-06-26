@@ -62,9 +62,7 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
   
   if (chillVariable %in% c("Chill Portions", "Utah Model")) {
     azDailySeasons <- azHourlySeasons %>% 
-      fxn_hourlyChillVarsToDaily(
-        inData = ., azmetStation = azmetStation, chillVariable = chillVariable
-      )
+      fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
   } else if (chillVariable == "Hours between 32 and 45 °F") {
     azDailySeasons <- azDailySeasons %>%
       dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)

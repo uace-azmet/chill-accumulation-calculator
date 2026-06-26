@@ -27,13 +27,13 @@ fxn_navsetCardTimeSeries <- function(inData, startDate, endDate, chillVariable) 
     dplyr::filter(datetime >= startDate)
   
   if (chillVariable == "Chill Portions") {
-    axisVarUnits <- "Portions"
+    axisVarUnits <- "portions"
     hoverTextVarUnits <- "portions"
   } else if (chillVariable == "Utah Model") {
-    axisVarUnits <- "Units"
+    axisVarUnits <- "units"
     hoverTextVarUnits <- "units"
   } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
-    axisVarUnits <- "Hours"
+    axisVarUnits <- "hours"
     hoverTextVarUnits <- "hours"
   }
   
@@ -137,8 +137,8 @@ fxn_navsetCardTimeSeries <- function(inData, startDate, endDate, chillVariable) 
         list(
           l = 0,
           r = 50, # For space between plot and modebar
-          b = 80, # For space between x-axis title and caption or figure help text
-          t = 0,
+          b = 0, # For space between x-axis title and caption or figure help text
+          t = 50,
           pad = 0
         ),
       modebar = list(bgcolor = "#FFFFFF", orientation = "v"),

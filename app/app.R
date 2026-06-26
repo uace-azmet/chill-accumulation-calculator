@@ -4,378 +4,380 @@
 # UI --------------------
 
 
-ui <- htmltools::htmlTemplate(
-  
-  filename = "azmet-shiny-template.html",
-  
-  pageChillAccumulationCalculator = 
-    bslib::page(
-      title = NULL,
-      theme = theme, # `scr##_theme.R`
-      
-      bslib::layout_sidebar(
-        sidebar = sidebar, # `scr##_sidebar.R`
+ui <- 
+  htmltools::htmlTemplate(
+    
+    filename = "azmet-shiny-template.html",
+    
+    pageChillAccumulationCalculator = 
+      bslib::page(
+        title = NULL,
+        theme = theme, # `scr##_theme.R`
         
-        shiny::htmlOutput(outputId = "navsetCardTabTitle"),
-        shiny::htmlOutput(outputId = "navsetCardTabSummary"),
-        shiny::uiOutput(outputId = "navsetCardTab")
-      ) |>
-        htmltools::tagAppendAttributes(
-          #https://getbootstrap.com/docs/5.0/utilities/api/
-          class = "border-0 rounded-0 shadow-none"
-        ),
-      
-      shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
-      shiny::htmlOutput(outputId = "pageBottomText")
-    )
+        bslib::layout_sidebar(
+          sidebar = sidebar, # `scr##_sidebar.R`
+          
+          shiny::htmlOutput(outputId = "navsetCardTabTitle"),
+          shiny::htmlOutput(outputId = "navsetCardTabSummary"),
+          shiny::uiOutput(outputId = "navsetCardTab")
+        ) |>
+          htmltools::tagAppendAttributes(
+            #https://getbootstrap.com/docs/5.0/utilities/api/
+            class = "border-0 rounded-0 shadow-none"
+          ),
+        
+        shiny::htmlOutput(outputId = "downloadButtonsDiv"), # Common, regardless of card tab
+        shiny::htmlOutput(outputId = "pageBottomText")
+      )
   )
 
 
 # Server --------------------
 
 
-server <- 
-  function(input, output, session) {
-    
-    shinyjs::useShinyjs(html = TRUE)
-    shinyjs::hideElement(id = "downloadButtonsDiv")
-    shinyjs::hideElement(id = "navsetCardTab")
-    
-    
-    # Observables -----
-    
-    shiny::observeEvent(chillAccumulation(), {
-      shinyjs::showElement(id = "downloadButtonsDiv")
-      shinyjs::showElement(id = "navsetCardTab")
-      showNavsetCardTab(TRUE)
-      showPageBottomText(TRUE)
-    })
-    
-    # To update available dates based on selected station
-    shiny::observeEvent(input$azmetStation, {
-      stationStartDate <-
-        dplyr::filter(azmetStationMetadata, meta_station_name == input$azmetStation) %>% 
-        dplyr::pull(start_date)
-      
-      stationStartDateMinimum <- stationStartDate
-      stationEndDateMinimum <- stationStartDate
-      
-      # if (stationStartDate > Sys.Date() - lubridate::years(1)) {
-      #   stationStartDateMinimum <- stationStartDate
-      #   stationEndDateMinimum <- stationStartDate
-      # } else {
-      #   stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
-      #   stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
-      # }
+server <- function(input, output, session) {
   
-      if (stationStartDate > input$startDate) {
-        stationStartDateSelected <- stationStartDate
-      } else {
-        stationStartDateSelected <- input$startDate
-      }
+  shinyjs::useShinyjs(html = TRUE)
+  shinyjs::hideElement(id = "downloadButtonsDiv")
+  shinyjs::hideElement(id = "navsetCardTab")
   
-      if (stationStartDate > input$endDate) {
-        stationEndDateSelected <- stationStartDate
-      } else {
-        stationEndDateSelected <- input$endDate
-      }
   
-      shiny::updateDateInput(
-        inputId = "startDate",
-        label = "Start Date",
-        value = stationStartDateSelected,
-        min = stationStartDateMinimum,
-        max = Sys.Date() - 1
+  # Observables -----
+  
+  shiny::observeEvent(chillAccumulation(), {
+    shinyjs::showElement(id = "downloadButtonsDiv")
+    shinyjs::showElement(id = "navsetCardTab")
+    showNavsetCardTab(TRUE)
+    showPageBottomText(TRUE)
+  })
+  
+  # To update available dates based on selected station
+  shiny::observeEvent(input$azmetStation, {
+    stationStartDate <-
+      dplyr::filter(azmetStationMetadata, meta_station_name == input$azmetStation) %>% 
+      dplyr::pull(start_date)
+    
+    stationStartDateMinimum <- stationStartDate
+    stationEndDateMinimum <- stationStartDate
+    
+    # if (stationStartDate > Sys.Date() - lubridate::years(1)) {
+    #   stationStartDateMinimum <- stationStartDate
+    #   stationEndDateMinimum <- stationStartDate
+    # } else {
+    #   stationStartDateMinimum <- Sys.Date() - lubridate::years(1)
+    #   stationEndDateMinimum <- Sys.Date() - lubridate::years(1)
+    # }
+    
+    if (stationStartDate > input$startDate) {
+      stationStartDateSelected <- stationStartDate
+    } else {
+      stationStartDateSelected <- input$startDate
+    }
+    
+    if (stationStartDate > input$endDate) {
+      stationEndDateSelected <- stationStartDate
+    } else {
+      stationEndDateSelected <- input$endDate
+    }
+    
+    shiny::updateDateInput(
+      inputId = "startDate",
+      label = "Start Date",
+      value = stationStartDateSelected,
+      min = stationStartDateMinimum,
+      max = Sys.Date() - 1
+    )
+    
+    shiny::updateDateInput(
+      inputId = "endDate",
+      label = "End Date",
+      value = stationEndDateSelected,
+      min = stationEndDateMinimum,
+      max = Sys.Date() - 1
+    )
+  })
+  
+  # Catch input errors before data download, show error modal
+  shiny::observeEvent(input$calculateTotal, {
+    if (input$startDate > input$endDate) {
+      shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
+    }
+    
+    if (
+      input$azmetStation == "Yuma N.Gila" & 
+      lubridate::int_overlaps(
+        int1 = yugNodataInterval, 
+        int2 = lubridate::interval(input$startDate, input$endDate)
+      ) == TRUE
+    ) {
+      shiny::showModal(datepickerYumaNGilaErrorModal) # `scr##_datepickerYumaNGilaErrorModal.R`
+    }
+  })
+  
+  # To update icon in navsetCardTab title
+  shiny::observeEvent(input$navsetCardTab, {
+    if (input$navsetCardTab == "barChart") {
+      navsetCardTabTitleIcon("bar-chart-fill")
+    } else if (input$navsetCardTab == "table") {
+      navsetCardTabTitleIcon("table")
+    } else if (input$navsetCardTab == "timeSeries") {
+      navsetCardTabTitleIcon("graph-up")
+    }
+  })
+  
+  
+  # Reactives -----
+  
+  chillAccumulation <- 
+    shiny::eventReactive(input$calculateTotal, {
+      # Catch input errors before data download
+      shiny::validate(
+        shiny::need(
+          expr = input$startDate <= input$endDate,
+          message = FALSE # Failing validation test
+        ),
+        
+        shiny::need(
+          expr =
+            !(input$azmetStation == "Yuma N.Gila" &
+                lubridate::int_overlaps(
+                  int1 = yugNodataInterval,
+                  int2 = lubridate::interval(input$startDate, input$endDate)
+                )
+            ),
+          message = FALSE # Failing validation test
+        )
       )
-  
-      shiny::updateDateInput(
-        inputId = "endDate",
-        label = "End Date",
-        value = stationEndDateSelected,
-        min = stationEndDateMinimum,
-        max = Sys.Date() - 1
+      
+      idCalculateTotal <- shiny::showNotification(
+        ui = "Calculating chill accumulation . . .",
+        action = NULL,
+        duration = NULL,
+        closeButton = FALSE,
+        id = "idCalculateTotal",
+        type = "message"
+      )
+      
+      on.exit(
+        shiny::removeNotification(id = idCalculateTotal),
+        add = TRUE
+      )
+      
+      fxn_chillAccumulation(
+        azmetStation = input$azmetStation,
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
       )
     })
-    
-    # Catch input errors before data download, show error modal
-    shiny::observeEvent(input$calculateTotal, {
-      if (input$startDate > input$endDate) {
-        shiny::showModal(datepickerErrorModal) # `scr##_datepickerErrorModal.R`
-      }
-
-      if (
-        input$azmetStation == "Yuma N.Gila" &
-        lubridate::int_overlaps(
-          int1 = yugNodataInterval,
-          int2 = lubridate::interval(input$startDate, input$endDate)
-        ) == TRUE
-      ) {
-        shiny::showModal(datepickerYumaNGilaErrorModal) # `scr##_datepickerYumaNGilaErrorModal.R`
-      }
+  
+  navsetCardBarChart <- 
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardBarChart(
+        inData = chillAccumulation()[[2]],
+        azmetStation = input$azmetStation,
+        chillVariable = input$chillVariable
+      )
     })
-    
-    # To update icon in navsetCardTab title
-    shiny::observeEvent(input$navsetCardTab, {
-      if (input$navsetCardTab == "barChart") {
-        navsetCardTabTitleIcon("bar-chart-fill")
-      } else if (input$navsetCardTab == "table") {
-        navsetCardTabTitleIcon("table")
-      } else if (input$navsetCardTab == "timeSeries") {
-        navsetCardTabTitleIcon("graph-up")
-      }
+  
+  navsetCardBarChartCaption <- 
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardBarChartCaption(
+        azmetStation = input$azmetStation,
+        inData = chillAccumulation()[[2]],
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
+      )
     })
-    
-    
-    # Reactives -----
-    
-    chillAccumulation <- 
-      shiny::eventReactive(input$calculateTotal, {
-        # Catch input errors before data download
-        shiny::validate(
-          shiny::need(
-            expr = input$startDate <= input$endDate,
-            message = FALSE # Failing validation test
-          ),
-          
-          shiny::need(
-            expr =
-              !(input$azmetStation == "Yuma N.Gila" &
-                  lubridate::int_overlaps(
-                    int1 = yugNodataInterval,
-                    int2 = lubridate::interval(input$startDate, input$endDate)
-                  )
-              ),
-            message = FALSE # Failing validation test
-          )
-        )
-        
-        idCalculateTotal <- shiny::showNotification(
-          ui = "Calculating chill accumulation . . .",
-          action = NULL,
-          duration = NULL,
-          closeButton = FALSE,
-          id = "idCalculateTotal",
-          type = "message"
-        )
-        
-        on.exit(
-          shiny::removeNotification(id = idCalculateTotal),
-          add = TRUE
-        )
-        
-        fxn_chillAccumulation(
-          azmetStation = input$azmetStation,
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardBarChart <- 
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardBarChart(
-          inData = chillAccumulation()[[2]],
-          azmetStation = input$azmetStation,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardBarChartCaption <- 
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardBarChartCaption(
-          azmetStation = input$azmetStation,
-          inData = chillAccumulation()[[2]],
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardTable <- 
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardTable(
-          inData = chillAccumulation()[[1]],
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardTableCaption <-
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardTableCaption(chillVariable = input$chillVariable)
-      })
-    
-    navsetCardTabSummary <-
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardTabSummary(
-          azmetStation = input$azmetStation,
-          inData = chillAccumulation()[[2]],
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardTabTitle <-
-      shiny::eventReactive(list(navsetCardTabTitleIcon(), chillAccumulation()), {
-        fxn_navsetCardTabTitle(
-          azmetStation = input$azmetStation,
-          navsetCardTabTitleIcon = navsetCardTabTitleIcon()
-        )
-      })
-    
-    navsetCardTabTooltipText <- 
-      shiny::eventReactive(input$navsetCardTab, {
-        fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
-      })
-    
-    navsetCardTimeSeries <- 
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardTimeSeries(
-          inData = chillAccumulation()[[1]],
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    navsetCardTimeSeriesCaption <-
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_navsetCardTimeSeriesCaption(
-          azmetStation = input$azmetStation,
-          inData = chillAccumulation()[[1]],
-          startDate = input$startDate,
-          endDate = input$endDate,
-          chillVariable = input$chillVariable
-        )
-      })
-    
-    pageBottomText <- 
-      shiny::eventReactive(chillAccumulation(), {
-        fxn_pageBottomText()
-      })
-    
-    
-    # Outputs -----
-    
-    output$dailyTable <- renderTable({
+  
+  navsetCardTable <- 
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardTable(
+        inData = chillAccumulation()[[1]],
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
+      )
+    })
+  
+  navsetCardTableCaption <-
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardTableCaption(chillVariable = input$chillVariable)
+    })
+  
+  navsetCardTabSummary <-
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardTabSummary(
+        azmetStation = input$azmetStation,
+        inData = chillAccumulation()[[2]],
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
+      )
+    })
+  
+  navsetCardTabTitle <-
+    shiny::eventReactive(list(navsetCardTabTitleIcon(), chillAccumulation()), {
+      fxn_navsetCardTabTitle(
+        azmetStation = input$azmetStation,
+        navsetCardTabTitleIcon = navsetCardTabTitleIcon()
+      )
+    })
+  
+  navsetCardTabTooltipText <- 
+    shiny::eventReactive(input$navsetCardTab, {
+      fxn_navsetCardTabTooltipText(navsetCardTab = input$navsetCardTab)
+    })
+  
+  navsetCardTimeSeries <- 
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardTimeSeries(
+        inData = chillAccumulation()[[1]],
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
+      )
+    })
+  
+  navsetCardTimeSeriesCaption <-
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_navsetCardTimeSeriesCaption(
+        azmetStation = input$azmetStation,
+        inData = chillAccumulation()[[1]],
+        startDate = input$startDate,
+        endDate = input$endDate,
+        chillVariable = input$chillVariable
+      )
+    })
+  
+  pageBottomText <- 
+    shiny::eventReactive(chillAccumulation(), {
+      fxn_pageBottomText()
+    })
+  
+  
+  # Outputs -----
+  
+  output$dailyTable <- 
+    renderTable({
       chillAccumulation()[[1]]
     })
-    
-    output$seasonalTable <- renderTable({
+  
+  output$seasonalTable <- 
+    renderTable({
       chillAccumulation()[[2]]
     })
   
-    output$downloadButtonsDiv <-
-      shiny::renderUI({
-        fxn_downloadButtonsDiv()
-      })
-
-    output$downloadCSV <-
-      shiny::downloadHandler(
-        filename = function() {
-          if (input$chillVariable == "Chill Portions") {
-            chillVariableText <- "chill-portions"
-          } else if (input$chillVariable == "Hours below 32 °F") {
-            chillVariableText <- "hours-below-32F"
-          } else if (input$chillVariable == "Hours below 45 °F") {
-            chillVariableText <- "hours-below-45F"
-          } else if (input$chillVariable == "Hours between 32 and 45 °F") {
-            chillVariableText <- "hours-between-32-and-45F"
-          } else if (input$chillVariable == "Hours above 68 °F") {
-            chillVariableText <- "hours-above-68F"
-          } else if (input$chillVariable == "Utah Model") {
-            chillVariableText <- "utah-model-chill-units"
-          }
-          
-          paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".csv")
-        },
-        content = function(file) {
-          vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = ",")
+  output$downloadButtonsDiv <-
+    shiny::renderUI({
+      fxn_downloadButtonsDiv()
+    })
+  
+  output$downloadCSV <-
+    shiny::downloadHandler(
+      filename = function() {
+        if (input$chillVariable == "Chill Portions") {
+          chillVariableText <- "chill-portions"
+        } else if (input$chillVariable == "Hours below 32 °F") {
+          chillVariableText <- "hours-below-32F"
+        } else if (input$chillVariable == "Hours below 45 °F") {
+          chillVariableText <- "hours-below-45F"
+        } else if (input$chillVariable == "Hours between 32 and 45 °F") {
+          chillVariableText <- "hours-between-32-and-45F"
+        } else if (input$chillVariable == "Hours above 68 °F") {
+          chillVariableText <- "hours-above-68F"
+        } else if (input$chillVariable == "Utah Model") {
+          chillVariableText <- "utah-model-chill-units"
         }
-      )
-
-    output$downloadTSV <-
-      shiny::downloadHandler(
-        filename = function() {
-          if (input$chillVariable == "Chill Portions") {
-            chillVariableText <- "chill-portions"
-          } else if (input$chillVariable == "Hours below 32 °F") {
-            chillVariableText <- "hours-below-32F"
-          } else if (input$chillVariable == "Hours below 45 °F") {
-            chillVariableText <- "hours-below-45F"
-          } else if (input$chillVariable == "Hours between 32 and 45 °F") {
-            chillVariableText <- "hours-between-32-and-45F"
-          } else if (input$chillVariable == "Hours above 68 °F") {
-            chillVariableText <- "hours-above-68F"
-          } else if (input$chillVariable == "Utah Model") {
-            chillVariableText <- "utah-model-chill-units"
-          }
-          
-          paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".tsv")
-        },
-        content = function(file) {
-          vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = "\t")
+        
+        paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".csv")
+      },
+      content = function(file) {
+        vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = ",")
+      }
+    )
+  
+  output$downloadTSV <-
+    shiny::downloadHandler(
+      filename = function() {
+        if (input$chillVariable == "Chill Portions") {
+          chillVariableText <- "chill-portions"
+        } else if (input$chillVariable == "Hours below 32 °F") {
+          chillVariableText <- "hours-below-32F"
+        } else if (input$chillVariable == "Hours below 45 °F") {
+          chillVariableText <- "hours-below-45F"
+        } else if (input$chillVariable == "Hours between 32 and 45 °F") {
+          chillVariableText <- "hours-between-32-and-45F"
+        } else if (input$chillVariable == "Hours above 68 °F") {
+          chillVariableText <- "hours-above-68F"
+        } else if (input$chillVariable == "Utah Model") {
+          chillVariableText <- "utah-model-chill-units"
         }
-      )
-
-    output$navsetCardBarChart <-
-      plotly::renderPlotly({
-        navsetCardBarChart()
-      })
-
-    output$navsetCardBarChartCaption <-
-      shiny::renderUI({
-        navsetCardBarChartCaption()
-      })
-
-    output$navsetCardTab <-
-      shiny::renderUI({
-        shiny::req(showNavsetCardTab())
-        navsetCardTab # `scr##_navsetCardTab.R`
-      })
-
-    output$navsetCardTable <-
-      reactable::renderReactable({
-        navsetCardTable()
-      })
-
-    output$navsetCardTableCaption <-
-      shiny::renderUI({
-        navsetCardTableCaption()
-      })
-
-    output$navsetCardTabSummary <-
-      shiny::renderUI({
-        navsetCardTabSummary()
-      })
-
-    output$navsetCardTabTitle <-
-      shiny::renderUI({
-        navsetCardTabTitle()
-      })
-
-    output$navsetCardTabTooltipText <-
-      shiny::renderUI({
-        navsetCardTabTooltipText()
-      })
-
-    output$navsetCardTimeSeries <-
-      plotly::renderPlotly({
-        navsetCardTimeSeries()
-      })
-
-    output$navsetCardTimeSeriesCaption <-
-      shiny::renderUI({
-        navsetCardTimeSeriesCaption()
-      })
-
-    output$pageBottomText <-
-      shiny::renderUI({
-        shiny::req(showPageBottomText())
-        pageBottomText()
-      })
+        
+        paste0("AZMet-chill-accumulation-calculator-", chillVariableText, ".tsv")
+      },
+      content = function(file) {
+        vroom::vroom_write(x = chillAccumulation()[[1]], file = file, delim = "\t")
+      }
+    )
+  
+  output$navsetCardBarChart <-
+    plotly::renderPlotly({
+      navsetCardBarChart()
+    })
+  
+  output$navsetCardBarChartCaption <-
+    shiny::renderUI({
+      navsetCardBarChartCaption()
+    })
+  
+  output$navsetCardTab <-
+    shiny::renderUI({
+      shiny::req(showNavsetCardTab())
+      navsetCardTab # `scr##_navsetCardTab.R`
+    })
+  
+  output$navsetCardTable <-
+    reactable::renderReactable({
+      navsetCardTable()
+    })
+  
+  output$navsetCardTableCaption <-
+    shiny::renderUI({
+      navsetCardTableCaption()
+    })
+  
+  output$navsetCardTabSummary <-
+    shiny::renderUI({
+      navsetCardTabSummary()
+    })
+  
+  output$navsetCardTabTitle <-
+    shiny::renderUI({
+      navsetCardTabTitle()
+    })
+  
+  output$navsetCardTabTooltipText <-
+    shiny::renderUI({
+      navsetCardTabTooltipText()
+    })
+  
+  output$navsetCardTimeSeries <-
+    plotly::renderPlotly({
+      navsetCardTimeSeries()
+    })
+  
+  output$navsetCardTimeSeriesCaption <-
+    shiny::renderUI({
+      navsetCardTimeSeriesCaption()
+    })
+  
+  output$pageBottomText <-
+    shiny::renderUI({
+      shiny::req(showPageBottomText())
+      pageBottomText()
+    })
 }
 
 

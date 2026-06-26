@@ -1,6 +1,6 @@
 #' `fxn_chillAccumulationSeasonal` - Calculates chill accumulation for an individual season
 #' 
-#' @param inData - Derived data table of daily values from `fxn_chillAccumulation.R`
+#' @param inData - Transformed data table of daily values from `fxn_chillAccumulation.R`
 #' @param azmetStation - AZMet station selection by user
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
@@ -60,36 +60,46 @@ fxn_chillAccumulationSeasonal <-
       if (chillVariable == "Chill Portions") {
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE)) %>%
-          # dplyr::rename(chill_accumulation_seasonal = chill_portions_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 1), nsmall = 1)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 1), nsmall = 1)
+            ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       } else if (chillVariable == "Hours below 32 °F") {
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE)) %>%
-          # dplyr::rename(chill_accumulation_seasonal = chill_hours_32F_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)
+          ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       } else if (chillVariable == "Hours below 45 °F") {
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE)) %>%
-          # dplyr::rename(chill_accumulation_seasonal = chill_hours_45F_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)
+          ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       } else if (chillVariable == "Hours between 32 and 45 °F") {
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE)) %>%
-          # dplyr::rename(chill_accumulation_seasonal = chill_hours_3245F_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)
+          ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       } else if (chillVariable == "Hours above 68 °F") {
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(chill_accumulation_seasonal = sum(chill, na.rm = TRUE)) %>%
-          # dplyr::rename(chill_accumulation_seasonal = chill_hours_68F_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 0), nsmall = 0)
+          ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       } else if (chillVariable == "Utah Model") {
@@ -116,7 +126,10 @@ fxn_chillAccumulationSeasonal <-
         chillAccumulationSeasonal <- inData %>%
           dplyr::summarize(utah_model_total = dplyr::last(utah_model_accum, na_rm = TRUE)) %>%
           dplyr::rename(chill_accumulation_seasonal = utah_model_total) %>%
-          dplyr::mutate(chill_accumulation_seasonal_label = format(round(chill_accumulation_seasonal, digits = 1), nsmall = 1)) %>%
+          dplyr::mutate(
+            chill_accumulation_seasonal_label = 
+              format(round(chill_accumulation_seasonal, digits = 1), nsmall = 1)
+          ) %>%
           dplyr::mutate(end_date_year = lubridate::year(endDate)) %>%
           dplyr::mutate(date_year_label = dateYearLabel)
       }
