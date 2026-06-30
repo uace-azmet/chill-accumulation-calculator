@@ -1,17 +1,32 @@
-#' `fxn_figureSummary.R` - Build summary of figure based on user input
+#' `fxn_navsetCardTabSummary.R` - Build summary of chill accumulation value based on user input
 #' 
 #' @param azmetStation - AZMet station selection by user
-#' @param inData - Data table of seasonal chill accumulation by year
+#' @param inData - data table of seasonal chill accumulation by year
 #' @param startDate - Start date of period of interest
 #' @param endDate - End date of period of interest
 #' @param chillVariable - Chill variable selected by user
-#' @return `figureSummary` - Summary of figure based on user inputs
+#' @return `navsetCardTabSummary` - Summary of chill accumulation value based on user input
 
 
-fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVariable) {
+fxn_navsetCardTabSummary <- function(azmetStation, inData, startDate, endDate, chillVariable) {
   
   currentYear <- lubridate::year(endDate)
-  currentYearTotal <- dplyr::filter(inData, endDateYear == currentYear)$chillTotal
+  currentYearTotal <- 
+    dplyr::filter(inData, end_date_year == currentYear) %>% 
+    dplyr::pull(chill_accumulation_seasonal)
+  
+  if (azmetStation == "Yuma N.Gila") {
+    yugNodataOverlapPreviousYear <- 
+      lubridate::int_overlaps(
+        int1 = yugNodataInterval, 
+        int2 = lubridate::interval(
+          start = startDate - lubridate::years(1), 
+          end = endDate - lubridate::years(1)
+        )
+      )
+  } else {
+    yugNodataOverlapPreviousYear <- FALSE
+  }
   
   if (chillVariable == "Chill Portions") {
     variableUnits <- "portions"
@@ -23,7 +38,7 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
   
   if (nrow(inData) == 1) { # For stations with only one year of data
     if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-      figureSummary <- 
+      navsetCardTabSummary <- 
         htmltools::p(
           htmltools::HTML(
             paste0(
@@ -31,10 +46,10 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
             ),
           ),
           
-          class = "figure-summary"
+          class = "navset-card-tab-summary"
         )
     } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
-      figureSummary <- 
+      navsetCardTabSummary <- 
         htmltools::p(
           htmltools::HTML(
             paste0(
@@ -42,14 +57,22 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
             ),
           ),
           
-          class = "figure-summary"
+          class = "navset-card-tab-summary"
         )
     }
   } else { # For stations with more than one year of data
-    averageTotal <- round(mean(inData$chillTotal, na.rm = TRUE), digits = 1)
+    averageTotal <- round(mean(inData$chill_accumulation_seasonal, na.rm = TRUE), digits = 1)
+    
     previousYear <- currentYear - 1
-    previousYearText <- dplyr::filter(inData, endDateYear == previousYear)$dateYearLabel
-    previousYearTotal <- round(dplyr::filter(inData, endDateYear == previousYear)$chillTotal, digits = 1)
+    previousYearText <- 
+      dplyr::filter(inData, end_date_year == previousYear) %>% 
+      dplyr::pull(date_year_label)
+    previousYearTotal <- 
+      round(
+        dplyr::filter(inData, end_date_year == previousYear) %>% 
+          dplyr::pull(chill_accumulation_seasonal), 
+        digits = 1
+      )
     
     differenceAverage <- currentYearTotal - averageTotal
     differencePreviousYear <- currentYearTotal - previousYearTotal
@@ -97,7 +120,7 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
     }
     
     if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-      figureSummary <- 
+      navsetCardTabSummary <- 
         htmltools::p(
           htmltools::HTML(
             paste0(
@@ -105,10 +128,10 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
             ),
           ),
           
-          class = "figure-summary"
+          class = "navset-card-tab-summary"
         )
     } else { # "Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F"
-      figureSummary <- 
+      navsetCardTabSummary <- 
         htmltools::p(
           htmltools::HTML(
             paste0(
@@ -116,10 +139,10 @@ fxn_figureSummary <- function(azmetStation, inData, startDate, endDate, chillVar
             ),
           ),
           
-          class = "figure-summary"
+          class = "navset-card-tab-summary"
         )
     }
   }
   
-  return(figureSummary)
+  return(navsetCardTabSummary)
 }

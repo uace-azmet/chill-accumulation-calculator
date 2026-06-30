@@ -19,6 +19,19 @@
   stroke: currentColor; /* Inherits the 'color' property of the parent */
 }
 
+/* https://stackoverflow.com/questions/77114751/is-it-possible-to-modify-the-arrow-that-collapses-the-sidebar */
+.bslib-sidebar-layout > .collapse-toggle > .collapse-icon {
+  fill: #989898 !important;
+}
+
+.bslib-sidebar-layout > .collapse-toggle:hover {
+  background-color: #f8f8f8 !important;
+}
+
+.bslib-sidebar-layout > .collapse-toggle:hover > .collapse-icon {
+  fill: #191919 !important;
+}
+
 .bslib-sidebar-resize-handle {
   display: none;
 }
@@ -51,10 +64,10 @@
 }
 
 .card-body.bslib-gap-spacing.html-fill-item.html-fill-container {
-  padding-bottom: 24px;
+  padding-bottom: 0px;
   padding-left: 24px;
   padding-right: 24px;
-  padding-top: 48px;
+  padding-top: 24px;
 }
 
 .century.active.disabled.focused {
@@ -82,6 +95,7 @@
 }
 
 .data-options-title {
+  margin-top: 1.5rem;
   padding-bottom: 1rem !important;
 }
 
@@ -118,37 +132,78 @@
   background-color: rgb(226, 233, 235) !important;
 }
 
-.decade.active.disabled.focused {
+.decade:hover {
+  background-color: rgb(226, 233, 235) !important;
+}
+
+.decade.active {
   background-color: rgb(226, 233, 235) !important;
   border-color: none !important;
   color: var(--bs-body-color) !important;
   text-shadow: none !important;
 }
 
-.decade.active.disabled.focused:hover {
+.decade.active:hover {
   background-color: rgb(226, 233, 235) !important;
   border-color: none !important;
   color: var(--bs-body-color) !important;
   text-shadow: none !important;
 }
 
-.figure-caption {
-  border-bottom: none !important;
-  color: #606060; 
-  font-size: 0.85rem;
-  font-style: normal;
-  margin-top: 0.5rem;
+.decade.disabled {
+  background-color: #FFFFFF !important;
+    border-color: none !important;
+  color: var(--bs-tertiary-color) !important;
+  text-shadow: none !important;
 }
 
-.figure-summary {
-  color: #191919;
-  font-weight: plain;
-  margin-bottom: 0px!important;
-  margin-top: 4px !important;
+.decade.disabled:hover {
+  background-color: #FFFFFF !important;
+    border-color: none !important;
+  color: var(--bs-tertiary-color) !important;
+  text-shadow: none !important;
 }
 
-.figure-title {
-  padding-bottom: 1rem !important;
+.decade.focused {
+  background-color: #FFFFFF !important;
+    border-color: none !important;
+  color: var(--bs-body-color) !important;
+  text-shadow: none !important;
+}
+
+.decade.focused.active {
+  background-color: rgb(226, 233, 235) !important;
+  border-color: none !important;
+  color: var(--bs-body-color) !important;
+  text-shadow: none !important;
+}
+
+.decade.focused.active:hover {
+  background-color: rgb(226, 233, 235) !important;
+  border-color: none !important;
+  color: var(--bs-body-color) !important;
+  text-shadow: none !important;
+}
+
+.decade.focused.disabled {
+  background-color: #FFFFFF !important;
+    border-color: none !important;
+  color: var(--bs-tertiary-color) !important;
+  text-shadow: none !important;
+}
+
+.decade.focused.disabled:hover {
+  background-color: #FFFFFF !important;
+    border-color: none !important;
+  color: var(--bs-tertiary-color) !important;
+  text-shadow: none !important;
+}
+
+.download-buttons-div {
+  padding-bottom: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 32px;
 }
 
 .form-control:focus {
@@ -185,8 +240,11 @@
 }
 
 .modal-title {
-  font-weight: normal !important; 
+  color: #191919 !important;
+  font-size: 1rem;
+  /* font-weight: normal !important; */
   margin-top: 0px !important;
+  text-align: left;
 }
 
 .modebar-container {
@@ -258,6 +316,30 @@
   border-color: none !important;
   color: var(--bs-tertiary-color) !important;
   text-shadow: none !important;
+}
+
+.navset-card-caption {
+  color: #606060; 
+  font-size: 0.85rem;
+  font-style: normal;
+  padding-top: 8px;
+}
+
+.navset-card-tab-summary {
+  color: #191919;
+  font-weight: plain;
+  margin-bottom: 0px!important;
+  margin-top: 0px !important;
+  padding-bottom: 1rem !important;
+}
+
+.navset-card-tab-title {
+  margin-top: 1.5rem;
+  padding-bottom: 1rem !important;
+}
+
+.navset-card-table .rt-tr-group .rt-tr:hover {
+  background-color: #e2e9eb !important;
 }
 
 .next:hover {
@@ -368,12 +450,12 @@
 /* id */
 
 #calculateTotal {
-  margin-top: 24px !important;
+  margin-top: 32px !important;
 }
 
-#datepickerModal {
-  color: #989898 !important;
-  font-size: 1rem;
-  font-style: normal;
-  text-align: left;
+#downloadCSV {
+  /* margin-bottom: 48px;
+  margin-left: 0px; */
+  margin-right: 1.5rem;
+  margin-top: 4px;
 }

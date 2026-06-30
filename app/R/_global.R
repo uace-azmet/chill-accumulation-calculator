@@ -10,6 +10,8 @@ library(htmltools)
 library(lubridate)
 library(plotly)
 library(shiny)
+library(shinyjs)
+library(vroom)
 
 
 # Files --------------------
@@ -21,49 +23,59 @@ library(shiny)
 # Scripts. Loaded automatically at app start if in `R` folder
 #source("./R/scr_scriptName.R", local = TRUE)
 
+shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
+
 
 # Variables --------------------
 
 
+# AZMet Stations -----
+
 azmetStationMetadata <- azmetr::station_info |>
   dplyr::mutate(end_date = NA) |> # Placeholder until inactive stations are in API and `azmetr`
   dplyr::mutate(
-    end_date = dplyr::if_else(
-      status == "active",
-      lubridate::today(tzone = "America/Phoenix") - 1,
-      end_date
-    )
+    end_date = 
+      dplyr::if_else(
+        status == "active",
+        lubridate::today(tzone = "America/Phoenix") - 1,
+        end_date
+      )
   ) |>
   dplyr::filter(!meta_station_name %in% c("Test"))
 
-activeStations <-
-  dplyr::filter(
-    azmetStationMetadata,
-    status == "active"
-  )
+activeStations <- dplyr::filter(azmetStationMetadata, status == "active")
 
-chillVariables <- 
-  c(
-    "Chill Portions",
-    "Hours below 32 °F",
-    "Hours between 32 and 45 °F",
-    "Hours below 45 °F", 
-    "Hours above 68 °F",
-    "Utah Model"
-  )
+initialStation <- activeStations |>
+  dplyr::arrange(meta_station_name) |>
+  dplyr::pull(meta_station_name) |>
+  dplyr::first()
+
+if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
+  initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
+} else {
+  initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
+}
+
+initialStartDateMinimum <- 
+  dplyr::filter(activeStations, meta_station_name == initialStation) |>
+  dplyr::pull(start_date)
+
+yugNodataStartDate <- lubridate::date("2021-06-16")
+yugNodataEndDate <- lubridate::date("2021-10-21")
+yugNodataInterval <- lubridate::interval(yugNodataStartDate, yugNodataEndDate)
 
 
-# Daily Data --
+# Daily Data -----
 
 # Derived (after data retrieved from station) variables
 dailyVarsDerived <- 
   c(
-    "chill_hours_0C",
-    "chill_hours_20C",
+    # "chill_hours_0C",
+    # "chill_hours_20C",
     "chill_hours_32F",
     "chill_hours_45F",
-    "chill_hours_68F",
-    "chill_hours_7C"#,
+    "chill_hours_68F"#,
+    # "chill_hours_7C",
     # "dwpt_mean", 
     # "dwpt_meanF", 
     # "eto_azmet",
@@ -102,13 +114,13 @@ dailyVarsDerived <-
 # Identification and date variables
 dailyVarsID <- 
   c(
-    "date_doy", 
-    "date_year", 
+    # "date_doy", 
+    # "date_year", 
     "datetime", 
-    "meta_needs_review", 
-    "meta_station_id", 
-    "meta_station_name", 
-    "meta_version"
+    # "meta_needs_review", 
+    # "meta_station_id", 
+    "meta_station_name"#, 
+    # "meta_version"
   )
 
 # Measured (or dervied at station datalogger) variables
@@ -147,7 +159,7 @@ dailyVarsMeasured <-
   )
 
 
-# Hourly Data --
+# Hourly Data -----
 
 # Derived (after data retrievd from station) variables
 hourlyVarsDerived <- 
@@ -176,11 +188,11 @@ hourlyVarsID <-
     "date_datetime",
     "date_doy",
     "date_hour",
-    "date_year", 
-    "meta_needs_review", 
-    "meta_station_id", 
-    "meta_station_name", 
-    "meta_version"
+    "date_year"#, 
+    # "meta_needs_review", 
+    # "meta_station_id", 
+    # "meta_station_name", 
+    # "meta_version"
   )
 
 # Measured (or derived at station datalogger) variables
@@ -206,22 +218,20 @@ hourlyVarsMeasured <-
     # "wind_vector_magnitude"
   )
 
-if (Sys.Date() <= as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))) {
-  initialStartDate <- as.Date(paste0((lubridate::year(Sys.Date()) - 1), "-09-01"))
-} else {
-  initialStartDate <- as.Date(paste0(lubridate::year(Sys.Date()), "-09-01"))
-}
 
-initialStation <-
-  dplyr::filter(
-    activeStations,
-    meta_station_name == azmetStationMetadata[order(azmetStationMetadata$meta_station_name), ]$meta_station_name[1]
-  )$meta_station_name
+# Other -----
 
-initialStationStartDate <- dplyr::filter(activeStations, meta_station_name == initialStation)$start_date
+chillVariables <- 
+  c(
+    "Chill Portions",
+    "Hours below 32 °F",
+    "Hours between 32 and 45 °F",
+    "Hours below 45 °F", 
+    "Hours above 68 °F",
+    "Utah Model"
+  )
 
-if (initialStationStartDate > Sys.Date() - lubridate::years(1)) {
-  initialStartDateMinimum <- initialStationStartDate
-} else {
-  initialStartDateMinimum <- Sys.Date() - lubridate::years(1)
-}
+navsetCardTabTitleIcon <- shiny::reactiveVal(value = "bar-chart-fill")
+
+showNavsetCardTab <- reactiveVal(FALSE)
+showPageBottomText <- reactiveVal(FALSE)
