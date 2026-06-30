@@ -9,6 +9,11 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
   
   hourlyChillVarsToDaily <- 
     as.data.frame(inData) %>%
+    
+    # Patch for `date_doy` and `date_year` error in database
+    dplyr::mutate(date_doy = lubridate::yday(date_datetime)) %>%
+    dplyr::mutate(date_year = lubridate::year(date_datetime)) %>%
+    
     dplyr::rename(
       Year = date_year,
       JDay = date_doy,
@@ -27,9 +32,9 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
           )
         ),
       Month = lubridate::month(date_datetime, label = FALSE),
-      Day = as.numeric(lubridate::day(date_datetime)) # CHECK THIS, TOO ???
+      Day = as.numeric(lubridate::day(date_datetime))
     ) %>%
-    dplyr::mutate( # To match hour definition in `chillR`, from 0 to 23 on a given date
+    dplyr::mutate( # To match hour values in `chillR`, from 0 to 23 on a given date
       Hour = Hour - 1,
       Hour = 
         dplyr::if_else(
@@ -42,12 +47,10 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
     na.omit(object = .) %>%  # `chillR` does not handle NAs within next function
     chillR::daily_chill(
       hourtemps = .,
-      # running_mean = 0,
       running_mean = 1, # default value for no smoothing
       models = list(Chill_Portions = Dynamic_Model, Utah_Chill_Units = Utah_Model),
       THourly = NULL
     ) %>%
-    # chillR::chilling_hourtable(hourtemps = ., Start_JDay = .$JDay[1])
     magrittr::extract2("daily_chill") %>%
     tibble::as_tibble() %>%
     dplyr::rename(
@@ -61,11 +64,6 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
       date_doy = lubridate::yday(datetime),
       meta_station_name = azmetStation
     )
-  
-      #%>% 
-    # dplyr::group_by(datetime) %>% 
-    # dplyr::filter(dplyr::row_number() > 1 | n() == 1) %>% 
-    # dplyr::ungroup()
   
   return(hourlyChillVarsToDaily)
 }

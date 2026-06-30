@@ -14,7 +14,7 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
     dplyr::pull(start_date)
     
   
-  # Data download -----
+  # Data download, hourly to daily transform -----
   
   startDateDownload <- startDate
   endDateDownload <- endDate
@@ -27,7 +27,6 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
           startDate = startDateDownload, # To call API by individual season
           endDate = endDateDownload
         )
-      # New
       azDaily <- azHourly %>% 
         fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
     } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
@@ -38,32 +37,6 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
           endDate = endDateDownload
         )
     }
-    
-    # if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-    #   if (exists("azHourlySeasons") == FALSE) {
-    #     azHourlySeasons <- azHourly
-    #   } else {
-    #     azHourlySeasons <- rbind(azHourlySeasons, azHourly)
-    #   }
-    # } else { # chillVariable %in% c("Hours below 32 °F", "Hours between 32 and 45 °F", "Hours below 45 °F", "Hours above 68 °F")
-    #   if (exists("azDailySeasons") == FALSE) {
-    #     azDailySeasons <- azDaily
-    #   } else {
-    #     azDailySeasons <- rbind(azDailySeasons, azDaily)
-    #   }
-    # }
-    # 
-    # 
-    # azDaily <- azDaily %>%
-    #   dplyr::mutate(
-    #     # date_year_label =
-    #     #   dplyr::if_else(
-    #     #     condition = lubridate::year(startDate) == lubridate::year(endDate),
-    #     #     true = as.character(lubridate::year(startDate)),
-    #     #     false = paste(lubridate::year(startDate), lubridate::year(endDate), sep = "-")
-    #     #   ),
-    #     day_of_period = dplyr::row_number()
-    #   )
     
     if (exists("azDailySeasons") == FALSE) {
       azDailySeasons <- azDaily
@@ -79,23 +52,12 @@ fxn_chillAccumulation <- function(azmetStation, startDate, endDate, chillVariabl
   }
   
   
+  # Data variable transform -----
   
-  # df <- azDailySeasons %>% 
-  #   dplyr::group_by(datetime) %>% 
-  #   dplyr::filter(duplicated(datetime) | dplyr::n() == 1) %>% 
-  #   dplyr::ungroup()
-  
-  
-  # Data transform -----
-  
-  # if (chillVariable %in% c("Chill Portions", "Utah Model")) {
-  #   azDailySeasons <- azHourlySeasons %>% 
-  #     fxn_hourlyChillVarsToDaily(inData = ., azmetStation = azmetStation)
-  # } else if (chillVariable == "Hours between 32 and 45 °F") {
   if (chillVariable == "Hours between 32 and 45 °F") {
     azDailySeasons <- azDailySeasons %>%
       dplyr::mutate(chill_hours_3245F = chill_hours_45F - chill_hours_32F)
-  } else { # chillVariable %in% c("Hours below 32 °F", "Hours below 45 °F", "Hours above 68 °F")
+  } else {
     azDailySeasons <- azDailySeasons
   }
   
