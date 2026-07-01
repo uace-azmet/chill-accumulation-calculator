@@ -10,9 +10,9 @@ fxn_hourlyChillVarsToDaily <- function(inData, azmetStation) {
   hourlyChillVarsToDaily <- 
     as.data.frame(inData) %>%
     
-    # Patch for `date_doy` and `date_year` error in database
-    dplyr::mutate(date_doy = lubridate::yday(date_datetime)) %>%
-    dplyr::mutate(date_year = lubridate::year(date_datetime)) %>%
+    # Patch for `date_doy` and `date_year` error in database, since corrected
+    # dplyr::mutate(date_doy = lubridate::yday(date_datetime)) %>%
+    # dplyr::mutate(date_year = lubridate::year(date_datetime)) %>%
     
     dplyr::rename(
       Year = date_year,
